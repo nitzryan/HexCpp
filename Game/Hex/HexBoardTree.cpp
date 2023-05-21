@@ -88,6 +88,10 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
     redTemplates.reserve(redTemplates.size() + 1);
     blueTemplates = base.blueTemplates;
     blueTemplates.reserve(blueTemplates.size() + 1);
+    redEdges = base.redEdges;
+    redEdges.reserve(redEdges.size() + 1);
+    blueEdges = base.blueEdges;
+    blueEdges.reserve(blueEdges.size() + 1);
 
     // Remove templates of current color that were broken by opponent
     auto templateList = base.isRed ? &redTemplates : &blueTemplates;
