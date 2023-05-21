@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>HexCppClass</class>
+ <widget class="QMainWindow" name="HexCppClass">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>600</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>HexCpp</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
+    <item>
+     <widget class="EvalBar" name="evalBar" native="true"/>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0">
+      <item>
+       <widget class="EvalTree" name="evalTree" native="true"/>
+      </item>
+      <item>
+       <widget class="HexGrid" name="hexGrid" native="true"/>
+      </item>
+      <item>
+       <widget class="QWidget" name="trainingWidget" native="true"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="ControlBar" name="controlBar" native="true"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>HexGrid</class>
+   <extends>QWidget</extends>
+   <header>UI/HexGrid.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ControlBar</class>
+   <extends>QWidget</extends>
+   <header>UI/ControlBar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>EvalBar</class>
+   <extends>QWidget</extends>
+   <header>UI/EvalBar.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>EvalTree</class>
+   <extends>QWidget</extends>
+   <header>UI/EvalTree.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="HexCpp.qrc"/>
+ </resources>
+ <connections/>
+</ui>

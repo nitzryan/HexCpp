@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\nitzr\source\repos\HexCpp\HexCpp\UI\</FILEPATH>
+      <FILENAME>HexGrid.cpp</FILENAME>
+      <LINE>90</LINE>
+      <COLUMN>33</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '+' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '+' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>HexGrid::drawHexagon</FUNCTION>
+    <DECORATED>?drawHexagon@HexGrid@@AEAAXAEAVQPainter@@HH@Z</DECORATED>
+    <FUNCLINE>63</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\nitzr\source\repos\HexCpp\HexCpp\UI\</FILEPATH>
+      <FILENAME>HexGrid.cpp</FILENAME>
+      <LINE>132</LINE>
+      <COLUMN>29</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '+' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '+' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>HexGrid::drawBorder</FUNCTION>
+    <DECORATED>?drawBorder@HexGrid@@AEAAXAEAVQPainter@@@Z</DECORATED>
+    <FUNCLINE>129</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\nitzr\source\repos\HexCpp\HexCpp\UI\</FILEPATH>
+      <FILENAME>HexGrid.cpp</FILENAME>
+      <LINE>133</LINE>
+      <COLUMN>72</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '-' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '-' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>HexGrid::drawBorder</FUNCTION>
+    <DECORATED>?drawBorder@HexGrid@@AEAAXAEAVQPainter@@@Z</DECORATED>
+    <FUNCLINE>129</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\nitzr\source\repos\HexCpp\HexCpp\UI\</FILEPATH>
+      <FILENAME>HexGrid.cpp</FILENAME>
+      <LINE>134</LINE>
+      <COLUMN>77</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '-' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '-' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>HexGrid::drawBorder</FUNCTION>
+    <DECORATED>?drawBorder@HexGrid@@AEAAXAEAVQPainter@@@Z</DECORATED>
+    <FUNCLINE>129</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

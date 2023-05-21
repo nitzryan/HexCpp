@@ -1,0 +1,123 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Database::rc' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/nitzr/source/repos/HexCpp/HexCpp/Database/Database.cpp"
+                },
+                "region": {
+                  "startLine": 102,
+                  "startColumn": 11,
+                  "endLine": 102,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Database::{ctor}",
+                  "decoratedName": "??0Database@@AEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Database::rc"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "Variable 'Database::zErrMsg' is uninitialized. Always initialize a member variable (type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/nitzr/source/repos/HexCpp/HexCpp/Database/Database.cpp"
+                },
+                "region": {
+                  "startLine": 102,
+                  "startColumn": 11,
+                  "endLine": 102,
+                  "endColumn": 11
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Database::{ctor}",
+                  "decoratedName": "??0Database@@AEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Database::zErrMsg"
+          }
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.35.32215.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///C:/Users/nitzr/source/repos/HexCpp/HexCpp/Database/Database.cpp"
+          },
+          "roles": [
+            "analysisTarget",
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "3acb1484578348c923d8fe2acbef4d42e1a5f94dc01ea439c259f35c6b6a62f5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/nitzr/source/repos/hexcpp/hexcpp/database/database.h"
+          },
+          "hashes": {
+            "sha-256": "e2aa0dfa55f3fb3c5db4e8fe66f062e5bb4cc0b2b2eb617ec6045f32e887167f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/nitzr/source/repos/hexcpp/hexcpp/database/sqlite/sqlite3.h"
+          },
+          "hashes": {
+            "sha-256": "7f2f39d337d1ce35efcced21e5ee9908eabcd5c0ed98e26be7a8814af51817ce"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/nitzr/source/repos/hexcpp/hexcpp/customvariant.h"
+          },
+          "hashes": {
+            "sha-256": "4ac3dbe0111d9da6b858970434e7708cfbf221a6984bb4328c1d5062db8c52cd"
+          }
+        }
+      ]
+    }
+  ]
+}

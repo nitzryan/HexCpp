@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\nitzr\source\repos\HexCpp\HexCpp\UI\</FILEPATH>
+      <FILENAME>UI.h</FILENAME>
+      <LINE>42</LINE>
+      <COLUMN>4</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'UI::TileNode::score' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>UI::TileNode::{ctor}</FUNCTION>
+    <DECORATED>??0TileNode@UI@@QEAA@XZ</DECORATED>
+    <FUNCLINE>42</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>UI::TileNode::score</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\nitzr\source\repos\HexCpp\HexCpp\UI\</FILEPATH>
+      <FILENAME>UI.h</FILENAME>
+      <LINE>42</LINE>
+      <COLUMN>4</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'UI::TileNode::heuristicScore' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>UI::TileNode::{ctor}</FUNCTION>
+    <DECORATED>??0TileNode@UI@@QEAA@XZ</DECORATED>
+    <FUNCLINE>42</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>UI::TileNode::heuristicScore</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\nitzr\source\repos\HexCpp\HexCpp\UI\</FILEPATH>
+      <FILENAME>UI.h</FILENAME>
+      <LINE>42</LINE>
+      <COLUMN>4</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'UI::TileNode::numChildren' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>UI::TileNode::{ctor}</FUNCTION>
+    <DECORATED>??0TileNode@UI@@QEAA@XZ</DECORATED>
+    <FUNCLINE>42</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>UI::TileNode::numChildren</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\nitzr\source\repos\HexCpp\HexCpp\UI\</FILEPATH>
+      <FILENAME>UI.h</FILENAME>
+      <LINE>42</LINE>
+      <COLUMN>4</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'UI::TileNode::tile' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>UI::TileNode::{ctor}</FUNCTION>
+    <DECORATED>??0TileNode@UI@@QEAA@XZ</DECORATED>
+    <FUNCLINE>42</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>UI::TileNode::tile</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\nitzr\source\repos\HexCpp\HexCpp\UI\</FILEPATH>
+      <FILENAME>UI.h</FILENAME>
+      <LINE>42</LINE>
+      <COLUMN>4</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'UI::TileNode::tileColor' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>UI::TileNode::{ctor}</FUNCTION>
+    <DECORATED>??0TileNode@UI@@QEAA@XZ</DECORATED>
+    <FUNCLINE>42</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>UI::TileNode::tileColor</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\nitzr\source\repos\HexCpp\HexCpp\UI\</FILEPATH>
+      <FILENAME>UI.h</FILENAME>
+      <LINE>31</LINE>
+      <COLUMN>4</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'UI::Tile::color' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>UI::Tile::{ctor}</FUNCTION>
+    <DECORATED>??0Tile@UI@@QEAA@XZ</DECORATED>
+    <FUNCLINE>31</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>UI::Tile::color</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>

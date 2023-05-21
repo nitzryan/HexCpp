@@ -1,0 +1,83 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.35.32215.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///c:/users/nitzr/source/repos/hexcpp/hexcpp/game/hex/hexboardtree.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "f9622de57da4e0691bb61c9049e6e8874abbd44dbe06361060907b279b5f7528"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/nitzr/source/repos/hexcpp/hexcpp/game/hex/hexboardtree.h"
+          },
+          "hashes": {
+            "sha-256": "7851adfc7efa2f3768186cc8435b732aa878bb627bf7c20d1d75ed600eb9d861"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/nitzr/source/repos/hexcpp/hexcpp/game/hex/hexweights.h"
+          },
+          "hashes": {
+            "sha-256": "d03980d668ad500fba0a59ada8144cbff672f364e6d6ac8b4df8e34dbbcaa9ef"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/nitzr/source/repos/hexcpp/hexcpp/game/abstractweights.h"
+          },
+          "hashes": {
+            "sha-256": "406afb9b64804ae947f099b1243366c6807bf1103708e207d7af448d335bbc11"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/nitzr/source/repos/hexcpp/hexcpp/game/hex/hextreenode.h"
+          },
+          "hashes": {
+            "sha-256": "af7eee090e47c4e95f98a03b2bba8af32ff5bcfe0fcdcf1b1a2f1661df0fd9a0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/nitzr/source/repos/hexcpp/hexcpp/game/hex/chain.h"
+          },
+          "hashes": {
+            "sha-256": "fc814402bcb3e0b632c70209d9e02801dff04c6c4cf57c3fdcac9dc0802551a2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/nitzr/source/repos/hexcpp/hexcpp/game/hex/bitarray.h"
+          },
+          "hashes": {
+            "sha-256": "aa6811cb46156ebc9ee837acae68620b205ae0ddb1d56c1a08d55a2d14e0df96"
+          }
+        }
+      ]
+    }
+  ]
+}

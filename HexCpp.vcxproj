@@ -1,0 +1,249 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="DebugWindows|x64">
+      <Configuration>DebugWindows</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseWindows|x64">
+      <Configuration>ReleaseWindows</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="DebugLinux|x64">
+      <Configuration>DebugLinux</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="ReleaseLinux|x64">
+      <Configuration>ReleaseLinux</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{AA7B6B54-9226-4134-B1A7-1C38499B9371}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)'=='DebugWindows|x64'">10.0.22000.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'">10.0.22000.0</WindowsTargetPlatformVersion>
+    <ApplicationType Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">Linux</ApplicationType>
+    <ApplicationTypeRevision Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">Generic</TargetLinuxPlatform>
+    <LinuxProjectType Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
+    <ApplicationType Condition="'$(Configuration)|$(Platform)' == 'ReleaseLinux|x64'">Linux</ApplicationType>
+    <ApplicationTypeRevision Condition="'$(Configuration)|$(Platform)' == 'ReleaseLinux|x64'">1.0</ApplicationTypeRevision>
+    <TargetLinuxPlatform Condition="'$(Configuration)|$(Platform)' == 'ReleaseLinux|x64'">Generic</TargetLinuxPlatform>
+    <LinuxProjectType Condition="'$(Configuration)|$(Platform)' == 'ReleaseLinux|x64'">{D51BCBC9-82E9-4017-911E-C93873C4EA2B}</LinuxProjectType>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWindows|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>WSL_1_0</PlatformToolset>
+    <UseDebugLibraries>true</UseDebugLibraries>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseLinux|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>WSL_1_0</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWindows|x64'" Label="QtSettings">
+    <QtInstall>6.4.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'" Label="QtSettings">
+    <QtInstall>6.4.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'" Label="QtSettings">
+    <QtInstall>6.4.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseLinux|x64'" Label="QtSettings">
+    <QtInstall>6.4.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='DebugWindows|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'ReleaseLinux|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWindows|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'">
+    <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseLinux|x64'">
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugLinux|x64'">
+    <ClCompile>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugWindows|x64'">
+    <ClCompile>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <WarningLevel>Level4</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseLinux|x64'">
+    <ClCompile>
+      <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugWindows|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'" Label="Configuration">
+    <ClCompile>
+      <PositionIndependentCode>true</PositionIndependentCode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'ReleaseLinux|x64'" Label="Configuration">
+    <ClCompile>
+      <PositionIndependentCode>true</PositionIndependentCode>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="Database\sqlite3.c" />
+    <ClCompile Include="Game\Hex\Edge.cpp" />
+    <ClCompile Include="Game\Hex\HexBoardHelper.cpp" />
+    <ClCompile Include="UI\ControlBar.cpp" />
+    <ClCompile Include="UI\EvalBar.cpp" />
+    <ClCompile Include="UI\EvalTree.cpp" />
+    <ClCompile Include="UI\HexController.cpp" />
+    <ClCompile Include="UI\HexGrid.cpp" />
+    <QtRcc Include="HexCpp.qrc" />
+    <QtUic Include="HexCpp.ui" />
+    <QtMoc Include="HexCpp.h" />
+    <ClCompile Include="Database\Database.cpp" />
+    <ClCompile Include="Game\AbstractAI.cpp" />
+    <ClCompile Include="Game\AbstractGame.cpp" />
+    <ClCompile Include="Game\Hex\BitArray.cpp" />
+    <ClCompile Include="Game\Hex\Chain.cpp" />
+    <ClCompile Include="Game\Hex\HexAI.cpp" />
+    <ClCompile Include="Game\Hex\HexBoard.cpp" />
+    <ClCompile Include="Game\Hex\HexBoardTree.cpp" />
+    <ClCompile Include="Game\Hex\HexGame.cpp" />
+    <ClCompile Include="Game\Hex\HexMove.cpp" />
+    <ClCompile Include="Game\Hex\HexTreeData.cpp" />
+    <ClCompile Include="Game\Hex\HexTreeNode.cpp" />
+    <ClCompile Include="Game\Hex\HexWeights.cpp" />
+    <ClCompile Include="Game\Hex\Template.cpp" />
+    <ClCompile Include="HexCpp.cpp" />
+    <ClCompile Include="main.cpp" />
+    <None Include="dlls\sqlite3.dll" />
+    <None Include="HexCpp.ico" />
+    <QtUic Include="UI\ControlBar.ui" />
+    <QtUic Include="UI\HexGrid.ui" />
+    <ResourceCompile Include="HexCpp.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CustomVariant.h" />
+    <ClInclude Include="Database\Database.h" />
+    <ClInclude Include="Database\sqlite3.h" />
+    <ClInclude Include="Game\AbstractAI.h" />
+    <ClInclude Include="Game\AbstractBoard.h" />
+    <ClInclude Include="Game\AbstractGame.h" />
+    <ClInclude Include="Game\AbstractMove.h" />
+    <ClInclude Include="Game\AbstractTreeData.h" />
+    <ClInclude Include="Game\AbstractWeights.h" />
+    <ClInclude Include="Game\Hex\BitArray.h" />
+    <ClInclude Include="Game\Hex\Chain.h" />
+    <ClInclude Include="Game\Hex\Edge.h" />
+    <ClInclude Include="Game\Hex\HexAI.h" />
+    <ClInclude Include="Game\Hex\HexBoard.h" />
+    <ClInclude Include="Game\Hex\HexBoardHelper.h" />
+    <ClInclude Include="Game\Hex\HexBoardTree.h" />
+    <ClInclude Include="Game\Hex\HexGame.h" />
+    <ClInclude Include="Game\Hex\HexMove.h" />
+    <ClInclude Include="Game\Hex\HexTreeData.h" />
+    <ClInclude Include="Game\Hex\HexTreeNode.h" />
+    <ClInclude Include="Game\Hex\HexWeights.h" />
+    <ClInclude Include="Game\Hex\Template.h" />
+    <ClInclude Include="UI\UI.h" />
+    <QtMoc Include="UI\HexGrid.h" />
+    <QtMoc Include="UI\HexController.h" />
+    <QtMoc Include="UI\EvalTree.h" />
+    <QtMoc Include="UI\EvalBar.h" />
+    <QtMoc Include="UI\ControlBar.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
