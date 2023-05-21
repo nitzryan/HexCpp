@@ -4,5 +4,7 @@
 *.vcxproj.filters
 
 # Build
-.obj
-.x64
+obj
+x64
+
+*.bak
