@@ -4,4 +4,6 @@
 *.vcxproj.filters
 
 # Build
-obj
+.obj
+.x64
+.x64
