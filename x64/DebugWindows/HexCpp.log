@@ -1,0 +1,44 @@
+﻿  Reading Qt configuration (C:/Qt6/6.4.2/msvc2019_64/bin/qmake)
+  uic HexCpp.ui
+  uic UI\ControlBar.ui
+  uic UI\HexGrid.ui
+  rcc HexCpp.qrc
+  moc HexCpp.h
+  moc UI\HexGrid.h
+  moc UI\HexController.h
+  moc UI\EvalTree.h
+  moc UI\EvalBar.h
+  moc UI\ControlBar.h
+   RCC: Warning: No resources in 'C:\Users\nitzr\source\repos\HexCpp\HexCpp\HexCpp.qrc'.
+  sqlite3.c
+  Edge.cpp
+  HexBoardHelper.cpp
+  ControlBar.cpp
+  EvalBar.cpp
+  EvalTree.cpp
+  HexController.cpp
+  HexGrid.cpp
+  Database.cpp
+  AbstractAI.cpp
+  AbstractGame.cpp
+  BitArray.cpp
+  Chain.cpp
+  HexAI.cpp
+  HexBoard.cpp
+  HexBoardTree.cpp
+  HexGame.cpp
+  HexMove.cpp
+  HexTreeData.cpp
+  HexTreeNode.cpp
+  HexWeights.cpp
+  Template.cpp
+  HexCpp.cpp
+  main.cpp
+  qrc_HexCpp.cpp
+  moc_HexCpp.cpp
+  moc_HexGrid.cpp
+  moc_HexController.cpp
+  moc_EvalTree.cpp
+  moc_EvalBar.cpp
+  moc_ControlBar.cpp
+  HexCpp.vcxproj -> C:\Users\nitzr\source\repos\HexCpp\HexCpp\x64\DebugWindows\HexCpp.exe
