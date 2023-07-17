@@ -16,12 +16,18 @@ void HexController::BoardstateCallback(std::unique_ptr<AbstractTreeData> newBoar
     lastMove = std::unique_ptr<HexMove>(static_cast<HexMove*>(move.release()));
     tree.reset(dynamic_cast<HexTreeData*>(newBoardTree.release()));
     auto moves = tree->GetMoves();
+
     std::vector<std::string> moveNotations;
-    moveNotations.reserve(moves.size());
+    moveNotations.reserve(moves.size() + 1);
     for (auto& i : moves) {
         moveNotations.emplace_back(i->GetNotation());
     }
-    emit BoardMoves(moveNotations);
+
+    if (lastMove != nullptr) {
+        moveNotations.emplace_back(lastMove->GetNotation());
+        emit BoardMoves(moveNotations);
+    }
+    
     EmitTreeSignals(tree->GetRoot());
 }
 
@@ -46,6 +52,21 @@ void HexController::NewGameRequested(int size, float time, bool P1AI, bool P2AI)
     }
     emit BoardState(tiles);
     emit BoardMoves({});
+}
+
+void HexController::MoveSelected(int move)
+{
+    game->SetStep((size_t)move);
+}
+
+void HexController::EvaluatePosition(float time)
+{
+    game->EvaluateBoard(std::make_unique<HexWeights>(), time);
+}
+
+void HexController::CommitPosition()
+{
+    game->StartFromCurrentState();
 }
 
 void HexController::TileClicked(int tile)

@@ -4,6 +4,7 @@
 #include "../AbstractAI.h"
 #include "HexBoard.h"
 #include "HexWeights.h"
+#include "HexTreeData.h"
 #include <memory>
 
 class HexAI : public AbstractAI

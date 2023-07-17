@@ -2,6 +2,7 @@
 
 #include "HexBoard.h"
 #include "HexAI.h"
+#include <assert.h>
 
 HexGame::HexGame(int size, float time, std::unique_ptr<HexWeights> p1AI, std::unique_ptr<HexWeights> p2AI) :
     AbstractGame(std::make_unique<HexBoard>(size, nullptr))
@@ -24,9 +25,7 @@ HexGame::HexGame(int size, float time, std::unique_ptr<HexWeights> p1AI, std::un
     currentPlayer = players.begin();
 
     if (p1IsAi) { // Start the game
-        players.at(0)->EvalBoard();
-        auto move = players.at(0)->GetBestMove();
-        this->MakeMove(std::move(move));
+        this->MakeMove(nullptr);
     }
 }
 
@@ -39,4 +38,23 @@ bool HexGame::NextMoveIsRed() const
 {
     auto currentBoard = static_cast<HexBoard*>(GetCurrentBoardState().release());
     return currentBoard->GetNextPlayerToMove() == 0;
+}
+
+std::unique_ptr<AbstractBoard> HexGame::GetBoard(int size, AbstractWeights* weights, std::vector<std::unique_ptr<AbstractMove>> moves) const
+{
+    HexWeights* hexWeights = dynamic_cast<HexWeights*> (weights);
+    if (hexWeights == nullptr) { // Invalid weights
+        assert(false);
+    }
+
+    std::vector<HexMove> hexMoves;
+    for (auto& i : moves) {
+        HexMove* hexMove = dynamic_cast<HexMove*> (i.get());
+        if (hexMove == nullptr) { // Input move array invalid
+            assert(false);
+        }
+        hexMoves.push_back(*hexMove);
+    }
+
+    return std::make_unique<HexBoard>(size, hexWeights, hexMoves);
 }

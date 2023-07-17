@@ -11,7 +11,7 @@ public:
 	char GetRank() const;
 	Chain* GetChain() const;
 	bool IsStillEdge(const HexBoardHelper* helper) const;
-	void RemapAddresses(Chain* old, Chain* current);
+	void RemapAddresses(const Chain* old, Chain* current);
 	static bool ShouldBeEdge(Chain* chain, char rank, const HexBoardHelper* helper);
 private:
 	Chain* chain;

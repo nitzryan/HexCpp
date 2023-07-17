@@ -26,6 +26,10 @@ public:
 public slots:
     void TileClicked(int tile);
     void NewGameRequested(int size, float time, bool P1AI, bool P2AI);
+    // Move Viewer
+    void MoveSelected(int move);
+    void EvaluatePosition(float time);
+    void CommitPosition();
 
 signals:
     void BoardState(std::vector<UI::Tile> tiles);

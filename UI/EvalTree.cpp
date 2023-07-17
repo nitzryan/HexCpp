@@ -73,7 +73,9 @@ void EvalTree::SendTileNode(std::shared_ptr<UI::TileNode> node)
     if (node->parent.lock() != nullptr) {
         tileColors.at(node->tile) = UI::TileIsBlue(node->tileColor) ? UI::TileColor::HighlightBlue : UI::TileColor::HighlightRed;
     } else {
-        tileColors.at(tree.lastMove) = !tree.lastMoveRed ? UI::TileColor::HighlightBlue : UI::TileColor::HighlightRed;
+        if (tree.lastMove >= 0) {
+            tileColors.at(tree.lastMove) = !tree.lastMoveRed ? UI::TileColor::HighlightBlue : UI::TileColor::HighlightRed;
+        }
     }
 
 

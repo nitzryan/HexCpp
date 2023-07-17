@@ -19,12 +19,15 @@
      <widget class="EvalBar" name="evalBar" native="true"/>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0">
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,0">
       <item>
        <widget class="EvalTree" name="evalTree" native="true"/>
       </item>
       <item>
        <widget class="HexGrid" name="hexGrid" native="true"/>
+      </item>
+      <item>
+       <widget class="MoveViewer" name="moveViewer" native="true"/>
       </item>
       <item>
        <widget class="QWidget" name="trainingWidget" native="true"/>
@@ -61,6 +64,12 @@
    <class>EvalTree</class>
    <extends>QWidget</extends>
    <header>UI/EvalTree.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MoveViewer</class>
+   <extends>QWidget</extends>
+   <header>UI/MoveViewer.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

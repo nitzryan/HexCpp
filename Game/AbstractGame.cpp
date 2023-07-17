@@ -17,7 +17,7 @@ void AbstractGame::MakeMove(std::unique_ptr<AbstractMove> m)
 {
     // Determine that move is legal, as human may attempt invalid moves (computers are perfect and have no bugs)
     // Also ensure that a human cannot make a move in a finished game
-    if (!boardStates.back()->IsMoveLegal(m) || boardStates.back()->GameIsOver()) {
+    if (m != nullptr && !boardStates.back()->IsMoveLegal(m) || boardStates.back()->GameIsOver()) {
         return;
     }
 
@@ -30,35 +30,37 @@ void AbstractGame::MakeMove(std::unique_ptr<AbstractMove> m)
     }
 
     MakeMoveAsync = std::async(std::launch::async, [this, move = std::move(m)]() mutable {
-        while (move != nullptr) {
-            // Prune current board state of evals to save memory, then update board
-            boardStates.back()->PruneBoard();
-            board->MakeMove(move.get());
+        do {
+            if (move != nullptr) {
+                // Prune current board state of evals to save memory, then update board
+                boardStates.back()->PruneBoard();
+                board->MakeMove(move.get());
 
-            // Send move to all players
-            for (auto& i : players) {
-                if (i != nullptr) {
-                    i->MakeMove(move.get());
+                // Send move to all players
+                for (auto& i : players) {
+                    if (i != nullptr) {
+                        i->MakeMove(move.get());
+                    }
                 }
-            }
 
-            // Immediately show move if it is a human move
-            if (move->IsHumanMove()) {
-                callback(board->GetTreeData(), move->GetCopy());
-            }
+                // Immediately show move if it is a human move
+                if (move->IsHumanMove()) {
+                    callback(board->GetTreeData(), move->GetCopy());
+                }
 
-            // Send
-            boardStates.push_back(board->GetBoard(false));
+                // Send
+                boardStates.push_back(board->GetBoard(false));
 
-            // Check if game is over
-            if (boardStates.back()->GameIsOver()) {
-                return;
-            }
+                // Check if game is over
+                if (boardStates.back()->GameIsOver()) {
+                    return;
+                }
 
-            // Get next move
-            currentPlayer++;
-            if (currentPlayer == players.end()) {
-                currentPlayer = players.begin();
+                // Get next move
+                currentPlayer++;
+                if (currentPlayer == players.end()) {
+                    currentPlayer = players.begin();
+                }
             }
 
             if (*currentPlayer != nullptr) { // Checks if player is human or AI
@@ -72,7 +74,7 @@ void AbstractGame::MakeMove(std::unique_ptr<AbstractMove> m)
                 move = nullptr;
             }
             
-        }
+        } while (move != nullptr);
     });
 }
 
@@ -121,6 +123,9 @@ void AbstractGame::SetStep(size_t step)
     if (step < boardStates.size()) {
         uncommitedBoardStateId = step;
     }
+
+    auto data = boardStates.at(uncommitedBoardStateId)->GetTreeData();
+    data = nullptr;
     callback(boardStates.at(uncommitedBoardStateId)->GetTreeData(), nullptr);
 }
 
@@ -132,7 +137,15 @@ void AbstractGame::StartFromCurrentState()
         boardStates.pop_back();
     }
 
-    // Add code to cause AI to move it next move should be an AI
+    MakeMove(nullptr);
+}
+
+void AbstractGame::EvaluateBoard(std::unique_ptr<AbstractWeights> weights, float time)
+{
+    auto currentMoves = boardStates.at(uncommitedBoardStateId)->GetMoves();
+    auto currentBoard = GetBoard(7, weights.get(), std::move(currentMoves));
+    currentBoard->ExpandBoardEval(time);
+    callback(currentBoard->GetTreeData(), nullptr);
 }
 
 std::unique_ptr<AbstractBoard> AbstractGame::GetCurrentBoardState() const

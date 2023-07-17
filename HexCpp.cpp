@@ -10,6 +10,10 @@ HexCpp::HexCpp(QWidget *parent)
     connect(ui.evalTree, &EvalTree::BoardTiles, ui.hexGrid, &HexGrid::BoardState);
     connect(controller, &HexController::EvalTree, ui.evalTree, &EvalTree::UpdateEvalTree);
     connect(ui.controlBar, &ControlBar::gameRequested, controller, &HexController::NewGameRequested);
+    connect(controller, &HexController::BoardMoves, ui.moveViewer, &MoveViewer::SetMoveList);
+    connect(ui.moveViewer, &MoveViewer::MoveSelected, controller, &HexController::MoveSelected);
+    connect(ui.moveViewer, &MoveViewer::EvaluatePosition, controller, &HexController::EvaluatePosition);
+    connect(ui.moveViewer, &MoveViewer::CommitPosition, controller, &HexController::CommitPosition);
 }
 
 HexCpp::~HexCpp()

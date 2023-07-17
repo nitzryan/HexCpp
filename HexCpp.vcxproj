@@ -5,6 +5,10 @@
       <Configuration>DebugWindows</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="HexDll|x64">
+      <Configuration>HexDll</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="ReleaseWindows|x64">
       <Configuration>ReleaseWindows</Configuration>
       <Platform>x64</Platform>
@@ -23,6 +27,7 @@
     <Keyword>QtVS_v304</Keyword>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)'=='DebugWindows|x64'">10.0.22000.0</WindowsTargetPlatformVersion>
     <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'">10.0.22000.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)'=='HexDll|x64'">10.0.22000.0</WindowsTargetPlatformVersion>
     <ApplicationType Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">Linux</ApplicationType>
     <ApplicationTypeRevision Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">1.0</ApplicationTypeRevision>
     <TargetLinuxPlatform Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">Generic</TargetLinuxPlatform>
@@ -40,6 +45,10 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HexDll|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'" Label="Configuration">
@@ -62,6 +71,11 @@
     <QtBuildConfig>debug</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'" Label="QtSettings">
+    <QtInstall>6.4.2_msvc2019_64</QtInstall>
+    <QtModules>core;gui;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HexDll|x64'" Label="QtSettings">
     <QtInstall>6.4.2_msvc2019_64</QtInstall>
     <QtModules>core;gui;widgets</QtModules>
     <QtBuildConfig>release</QtBuildConfig>
@@ -89,6 +103,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(QtMsBuild)\Qt.props" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='HexDll|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(QtMsBuild)\Qt.props" />
@@ -101,6 +119,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugWindows|x64'">
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWindows|x64'">
+    <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='HexDll|x64'">
     <EnableClangTidyCodeAnalysis>true</EnableClangTidyCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'">
@@ -116,6 +137,22 @@
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <TreatWarningAsError>true</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='HexDll|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <PreprocessorDefinitions>BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
@@ -166,6 +203,18 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='HexDll|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'DebugLinux|x64'" Label="Configuration">
     <ClCompile>
       <PositionIndependentCode>true</PositionIndependentCode>
@@ -185,6 +234,7 @@
     <ClCompile Include="UI\EvalTree.cpp" />
     <ClCompile Include="UI\HexController.cpp" />
     <ClCompile Include="UI\HexGrid.cpp" />
+    <ClCompile Include="UI\MoveViewer.cpp" />
     <QtRcc Include="HexCpp.qrc" />
     <QtUic Include="HexCpp.ui" />
     <QtMoc Include="HexCpp.h" />
@@ -233,6 +283,7 @@
     <ClInclude Include="Game\Hex\HexTreeNode.h" />
     <ClInclude Include="Game\Hex\HexWeights.h" />
     <ClInclude Include="Game\Hex\Template.h" />
+    <QtMoc Include="UI\MoveViewer.h" />
     <ClInclude Include="UI\UI.h" />
     <QtMoc Include="UI\HexGrid.h" />
     <QtMoc Include="UI\HexController.h" />

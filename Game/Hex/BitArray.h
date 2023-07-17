@@ -13,6 +13,10 @@ public:
      */
     BitArray();
     /**
+     * @brief Copy Constructor
+     */
+    BitArray(const BitArray* ba);
+    /**
      * @brief BitArray
      * Initialized as all 0
      * @param numTiles Number of bits required
@@ -70,7 +74,12 @@ public:
     * @brief UnsetBit
     * @param bit Bit to set to 0
     */
-    void UnsetBit(short tile);
+    void UnsetBit(short bit);
+    /**
+    * @brief SetBit
+    * @param bit Bit to set to 1
+    */
+    void SetBit(short bit);
     /**
     * @brief Equal
     * @return 

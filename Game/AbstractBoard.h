@@ -2,8 +2,10 @@
 #define ABSTRACTBOARD_H
 
 #include <memory>
+#include <vector>
 #include "AbstractMove.h"
 #include "AbstractTreeData.h"
+#include "AbstractWeights.h"
 
 class AbstractBoard
 {
@@ -35,6 +37,10 @@ public:
      */
     virtual void PruneBoard() = 0;
     /**
+    * @brief RemoveChildren
+    */
+    virtual void Clear() = 0;
+    /**
      * @brief GetBestMove
      * @return Best move available, as evaluated by heuristic function
      */
@@ -65,6 +71,16 @@ public:
      * @param move
      */
     virtual std::unique_ptr<AbstractMove> GetChosenMove() const = 0;
+    /**
+     * @brief SetWeights
+     * @param weights
+     */
+    virtual void SetWeights(AbstractWeights* weights) = 0;
+    /**
+     * @brief GetMoves
+     * @return
+     */
+    virtual std::vector<std::unique_ptr<AbstractMove>> GetMoves() const = 0;
 };
 
 #endif // ABSTRACTBOARD_H

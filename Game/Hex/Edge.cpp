@@ -22,7 +22,7 @@ bool Edge::IsStillEdge(const HexBoardHelper* helper) const
 	return Edge::ShouldBeEdge(chain, rank, helper);
 }
 
-void Edge::RemapAddresses(Chain* old, Chain* current)
+void Edge::RemapAddresses(const Chain* old, Chain* current)
 {
 	if (chain == old) {
 		chain = current;
@@ -31,6 +31,9 @@ void Edge::RemapAddresses(Chain* old, Chain* current)
 
 bool Edge::ShouldBeEdge(Chain* chain, char rank, const HexBoardHelper* helper)
 {
+	if (chain->GetMinRank() == rank || chain->GetMaxRank() == rank) { // Not edge since already connected
+		return false;
+	}
 	if (chain->IsRed()) {
 		return BitArray::And(chain->GetAdjacencies(), helper->GetRankBitArrayRed(rank)).MoreThanOneBit();
 	}

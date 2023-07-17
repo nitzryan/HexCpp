@@ -1,6 +1,12 @@
 #ifndef HEXBOARD_H
 #define HEXBOARD_H
 
+#ifdef BUILD_DLL
+#define EXPORT __declspec(dllexport)
+#else
+#define EXPORT 
+#endif
+
 #include "../AbstractBoard.h"
 #include "HexMove.h"
 #include "HexBoardTree.h"
@@ -8,7 +14,7 @@
 #include <vector>
 #include <memory>
 
-class HexBoard : public AbstractBoard
+class EXPORT HexBoard : public AbstractBoard
 {
 public:
     /**
@@ -20,6 +26,13 @@ public:
      * @param board
      */
     HexBoard(const HexBoard* board);
+    /**
+    * @brief Contructor given move list
+    * @param size size of board
+    * @param weights Weights for evaluation
+    * @param moves Moves already made in game
+    */
+    HexBoard(int size, HexWeights* weights, std::vector<HexMove> moves);
     /**
      * @brief ~HexBoard
      */
@@ -46,6 +59,10 @@ public:
      */
     void PruneBoard() override;
     /**
+    * @brief RemoveChildren
+    */
+    void Clear() override;
+    /**
      * @brief GetBestMove
      * @return
      */
@@ -71,6 +88,8 @@ public:
     int GetSize() const;
     std::unique_ptr<AbstractTreeData> GetTreeData() const override;
     std::unique_ptr<AbstractMove> GetChosenMove() const override;
+    void SetWeights(AbstractWeights* weights) override;
+    std::vector<std::unique_ptr<AbstractMove>> GetMoves() const override;
 private:
     int size;
     std::vector<std::unique_ptr<HexMove>> moves;

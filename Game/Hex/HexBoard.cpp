@@ -2,6 +2,7 @@
 #include "HexTreeData.h"
 #include <chrono>
 #include <QDebug>
+#include <assert.h>
 
 HexBoard::HexBoard(int size, HexWeights* weights)
 {
@@ -26,6 +27,19 @@ HexBoard::HexBoard(const HexBoard* board)
     root = std::make_unique<HexBoardTree>(board->root);
     this->size = board->size;
     helper = std::make_unique<HexBoardHelper>(size);
+}
+
+HexBoard::HexBoard(int size, HexWeights* weights, std::vector<HexMove> moves)
+{
+    int size2 = size * size;
+    this->size = size;
+    this->moves = std::vector<std::unique_ptr<HexMove>>(0);
+    tiles = std::vector<Hex::Tile>(size2);
+    for (auto& i : tiles) {
+        i = Hex::Tile::Empty;
+    }
+    helper = std::make_unique<HexBoardHelper>(size);
+    root = HexBoardTree::CreateTree(size, weights, helper.get(), moves);
 }
 
 HexBoard::~HexBoard()
@@ -75,6 +89,11 @@ void HexBoard::ExpandBoardEval(float time)
 void HexBoard::PruneBoard()
 {
     root->PruneTree();
+}
+
+void HexBoard::Clear()
+{
+    root->RemoveChildren();
 }
 
 std::unique_ptr<AbstractMove> HexBoard::GetBestMove() const
@@ -134,4 +153,18 @@ std::unique_ptr<AbstractMove> HexBoard::GetChosenMove() const
     return std::move(hexMove);
 }
 
+void HexBoard::SetWeights(AbstractWeights* weights)
+{
+    root->SetWeights(dynamic_cast<HexWeights*>(weights));
+}
+
+std::vector<std::unique_ptr<AbstractMove>> HexBoard::GetMoves() const
+{
+    std::vector<std::unique_ptr<AbstractMove>> returnMoves;
+    returnMoves.reserve(moves.size());
+    for (auto& i : moves) {
+        returnMoves.push_back(i->GetCopy());
+    }
+    return returnMoves;
+}
 

@@ -17,7 +17,7 @@ public:
      * @brief HexBoardTree
      * @param numTiles
      */
-    HexBoardTree(short numTiles, HexWeights* weights, HexBoardHelper* h, std::vector<HexMove> moveList = {});
+    HexBoardTree(short numTiles, HexWeights* weights, HexBoardHelper* h);
     /**
      * @brief HexBoardTree
      * @param base
@@ -29,6 +29,10 @@ public:
      * @param move
      */
     HexBoardTree(const HexBoardTree& base, short move);
+    /**
+    * @brief Creates tree from list of moves
+    */
+    static std::unique_ptr<HexBoardTree> CreateTree(short numTiles, HexWeights* weights, HexBoardHelper* h, std::vector<HexMove> moveList);
     ~HexBoardTree();
     /**
      * @brief ExpandTree
@@ -43,6 +47,10 @@ public:
      * @brief PruneTree
      */
     void PruneTree();
+    /**
+     * @brief Remove Children
+     */
+    void RemoveChildren();
     /**
      * @brief SelectBranch
      * @param move
@@ -67,6 +75,7 @@ public:
     void SetTile(short t);
 
     const std::vector<Chain>* GetChainList(bool red) const;
+    void SetWeights(HexWeights* w) { weights = *w; }
 private:
     std::vector<std::unique_ptr<HexBoardTree>> children;
     std::vector<short> remainingMoves;
@@ -84,7 +93,9 @@ private:
     std::vector<Chain> redChains, blueChains;
     std::vector<Template> redTemplates, blueTemplates;
     std::vector<Edge> redEdges, blueEdges;
-    HexBoardHelper* helper;
+    const HexBoardHelper* helper;
+
+    BitArray placedTiles, redAdjacencies, blueAdjacencies;
 };
 
 #endif // HEXBOARDTREE_H

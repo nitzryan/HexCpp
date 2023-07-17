@@ -13,6 +13,7 @@ public:
     float CenterPenalty;
     float ChainLengthFactor;
     float TemplateLengthFactor;
+    float TempoBias;
 };
 
 #endif // HEXWEIGHTS_H

@@ -84,7 +84,13 @@ public:
      * If next move is by an AI, it will immediately start making its move
      */
     void StartFromCurrentState();
-
+    /**
+     * @brief Evaluate board
+     */
+    void EvaluateBoard(std::unique_ptr<AbstractWeights> weights, float time);
+    /**
+    */
+    virtual std::unique_ptr<AbstractBoard> GetBoard(int size, AbstractWeights* weights, std::vector<std::unique_ptr<AbstractMove>> moves) const = 0;
 protected:
     std::vector<std::unique_ptr<AbstractAI>> players; // Human players are nullptr, but need to be in vector
     std::vector<std::unique_ptr<AbstractAI>>::iterator currentPlayer;

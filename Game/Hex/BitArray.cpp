@@ -9,6 +9,11 @@ BitArray::BitArray()
     // Intentionally don't initialize bits, as it will be initialized elsewhere
 }
 
+BitArray::BitArray(const BitArray* ba)
+{
+    bits = ba->bits;
+}
+
 BitArray::BitArray(int numTiles)
 {
     bits = std::vector<uint32_t>(static_cast<int>(std::ceil(static_cast<float>(numTiles) / 32.0f)));
@@ -93,11 +98,18 @@ bool BitArray::AtLeaseOneBit() const
     return false;
 }
 
-void BitArray::UnsetBit(short tile)
+void BitArray::UnsetBit(short bit)
 {
-    int div = tile / INT_SIZE;
-    int rem = tile % INT_SIZE;
-    bits[div] &= 1 << rem;
+    int div = bit / INT_SIZE;
+    int rem = bit % INT_SIZE;
+    bits[div] &= ~(1 << rem);
+}
+
+void BitArray::SetBit(short bit)
+{
+    int div = bit / INT_SIZE;
+    int rem = bit % INT_SIZE;
+    bits[div] |= (1 << rem);
 }
 
 bool BitArray::Equal(const BitArray* a, const BitArray* b)

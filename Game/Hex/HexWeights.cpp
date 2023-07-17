@@ -4,7 +4,8 @@ HexWeights::HexWeights():
     DepthPenalty(0.05f),
     CenterPenalty(0.02f),
     ChainLengthFactor(0.07f),
-    TemplateLengthFactor(0.10f)
+    TemplateLengthFactor(0.10f),
+    TempoBias(0.10f)
 {
 
 }

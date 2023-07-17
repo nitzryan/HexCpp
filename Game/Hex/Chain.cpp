@@ -1,6 +1,6 @@
 #include "Chain.h"
 
-Chain::Chain(short tile, short size, bool isRed)
+Chain::Chain(short tile, short size, bool isRed, BitArray* placedTiles)
 {
     this->isRed = isRed;
     short size2 = size * size;
@@ -31,6 +31,8 @@ Chain::Chain(short tile, short size, bool isRed)
     }
 
     adjacent = BitArray(size2, adjTiles);
+    BitArray emptyTiles = BitArray::Not(placedTiles);
+    adjacent = BitArray::And(&adjacent, &emptyTiles);
 
     // Set rank
     minRank = isRed ? static_cast<char>(row) : static_cast<char>(col);
