@@ -16,13 +16,14 @@ HexBoardTree::HexBoardTree(short s, HexWeights* w, HexBoardHelper* h)
         remainingMoves[i] = static_cast<short>(i);
     }
     isRed = true;
-    weights = (w == nullptr) ? HexWeights{} : *w;
+    assert(w != nullptr);
+    weights = w;
     move = -1;
     boardTiles = numTiles;
     size = s;
     helper = h;
     // Scores
-    centerScore = s * weights.DepthPenalty * 0.5f;
+    centerScore = s * w->DepthPenalty * 0.5f;
     heuristicScore = 0;
     searchScoreRed = 0;
     searchScoreBlue = 0;
@@ -265,13 +266,6 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
         i.CheckToBreak(move);
     }
 
-    if (!newChain.IsRed()) {
-        heuristicScore = heuristicScore;
-    }
-    if (newChain.IsRed()) {
-        heuristicScore = heuristicScore;
-    }
-
     // Calculate Heuristic Score
     // Center Penalty
     auto halfSize = size / 2;
@@ -282,9 +276,9 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
         std::abs(row - halfSize) + std::abs(col - halfSize);
     centerScore = base.centerScore;
     if (base.isRed) {
-        centerScore -= rowPlusColOffset * weights.CenterPenalty;
+        centerScore -= rowPlusColOffset * weights->CenterPenalty;
     } else {
-        centerScore += rowPlusColOffset * weights.CenterPenalty;
+        centerScore += rowPlusColOffset * weights->CenterPenalty;
     }
     heuristicScore = centerScore;
 
@@ -361,15 +355,15 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
         heuristicScore = -(MAX_SCORE + remainingMoves.size());
         fullyTraversed = true;
     } else { // Neither player has won
-        heuristicScore += longRed * weights.ChainLengthFactor;
-        heuristicScore += longTemplateRed * weights.TemplateLengthFactor;
-        heuristicScore -= longBlue * weights.ChainLengthFactor;
-        heuristicScore -= longTemplateBlue * weights.TemplateLengthFactor;
+        heuristicScore += weights->ChainLengthFactor[longRed];
+        heuristicScore += weights->TemplateLengthFactor[longTemplateRed];
+        heuristicScore -= weights->ChainLengthFactor[longBlue];
+        heuristicScore -= weights->TemplateLengthFactor[longTemplateBlue];
     }
 
     // Add bias to prevent score oscillation
     if (!isRed) {
-        heuristicScore -= weights.TempoBias;
+        heuristicScore -= weights->TempoBias;
     }
 
     // Set Scores from Heuristic Score
@@ -444,11 +438,11 @@ void HexBoardTree::ExpandTree()
             if (i->score > score) {
                 score = i->score;
             }
-            auto redSearch = i->searchScoreRed - weights.DepthPenalty;
+            auto redSearch = i->searchScoreRed - weights->DepthPenalty;
             if (redSearch > searchScoreRed) {
                 searchScoreRed = redSearch;
             }
-            auto blueSearch = i->searchScoreBlue + weights.DepthPenalty;
+            auto blueSearch = i->searchScoreBlue + weights->DepthPenalty;
             if (blueSearch > searchScoreBlue) {
                 searchScoreBlue = blueSearch;
             }
@@ -461,11 +455,11 @@ void HexBoardTree::ExpandTree()
             if (i->score < score) {
                 score = i->score;
             }
-            auto redSearch = i->searchScoreRed - weights.DepthPenalty;
+            auto redSearch = i->searchScoreRed - weights->DepthPenalty;
             if (redSearch < searchScoreRed) {
                 searchScoreRed = redSearch;
             }
-            auto blueSearch = i->searchScoreBlue + weights.DepthPenalty;
+            auto blueSearch = i->searchScoreBlue + weights->DepthPenalty;
             if (blueSearch < searchScoreBlue) {
                 searchScoreBlue = blueSearch;
             }

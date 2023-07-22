@@ -91,6 +91,7 @@ public:
     /**
     */
     virtual std::unique_ptr<AbstractBoard> GetBoard(int size, AbstractWeights* weights, std::vector<std::unique_ptr<AbstractMove>> moves) const = 0;
+    int GetSize() const { return size; }
 protected:
     std::vector<std::unique_ptr<AbstractAI>> players; // Human players are nullptr, but need to be in vector
     std::vector<std::unique_ptr<AbstractAI>>::iterator currentPlayer;

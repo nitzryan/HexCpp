@@ -3,12 +3,14 @@
 
 HexController::HexController(QObject* parent) : QObject(parent)
 {
-
+    hexWeights = nullptr;
 }
 
 HexController::~HexController()
 {
-
+    if (hexWeights != nullptr) {
+        delete hexWeights;
+    }
 }
 
 void HexController::BoardstateCallback(std::unique_ptr<AbstractTreeData> newBoardTree, std::unique_ptr<AbstractMove> move)
@@ -34,9 +36,12 @@ void HexController::BoardstateCallback(std::unique_ptr<AbstractTreeData> newBoar
 void HexController::NewGameRequested(int size, float time, bool P1AI, bool P2AI)
 {
     // Create game
-    std::unique_ptr<HexWeights> p1Weights = P1AI ? std::make_unique<HexWeights>() : nullptr;
-    std::unique_ptr<HexWeights> p2Weights = P2AI ? std::make_unique<HexWeights>() : nullptr;
-    game.reset(new HexGame(size, time, std::move(p1Weights), std::move(p2Weights)));
+    std::unique_ptr<HexWeights> p1Weights = P1AI ? std::make_unique<HexWeights>(size) : nullptr;
+    std::unique_ptr<HexWeights> p2Weights = P2AI ? std::make_unique<HexWeights>(size) : nullptr;
+    if (hexWeights != nullptr)
+        delete hexWeights;
+    hexWeights = new HexWeights(size);
+    game.reset(new HexGame(size, time, std::move(p1Weights), std::move(p2Weights), hexWeights));
 
     // Setup callback for UI
     auto callbackPtr = [this](std::unique_ptr<AbstractTreeData> b, std::unique_ptr<AbstractMove> m) {
@@ -61,7 +66,7 @@ void HexController::MoveSelected(int move)
 
 void HexController::EvaluatePosition(float time)
 {
-    game->EvaluateBoard(std::make_unique<HexWeights>(), time);
+    game->EvaluateBoard(std::make_unique<HexWeights>(game->GetSize()), time);
 }
 
 void HexController::CommitPosition()

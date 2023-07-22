@@ -4,8 +4,8 @@
 #include "HexAI.h"
 #include <assert.h>
 
-HexGame::HexGame(int size, float time, std::unique_ptr<HexWeights> p1AI, std::unique_ptr<HexWeights> p2AI) :
-    AbstractGame(std::make_unique<HexBoard>(size, nullptr))
+HexGame::HexGame(int size, float time, std::unique_ptr<HexWeights> p1AI, std::unique_ptr<HexWeights> p2AI, HexWeights* boardWeights) :
+    AbstractGame(std::make_unique<HexBoard>(size, boardWeights))
 {
     bool p1IsAi = false;
     if (p1AI != nullptr) {

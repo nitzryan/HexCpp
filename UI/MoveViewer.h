@@ -1,5 +1,5 @@
 #ifndef MOVEVIEWER_H
-#define MOVEIVEWER_H
+#define MOVEVIEWER_H
 
 #include <QWidget>
 #include <QGridLayout>

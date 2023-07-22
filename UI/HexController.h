@@ -40,6 +40,7 @@ private:
     std::unique_ptr<HexGame> game;
     std::unique_ptr<HexTreeData> tree;
     std::unique_ptr<HexMove> lastMove;
+    HexWeights* hexWeights;
 
     void EmitTreeSignals(std::shared_ptr<HexTreeNode> node);
 };

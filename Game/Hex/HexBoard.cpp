@@ -54,7 +54,7 @@ HexBoard::HexBoard(int size, HexWeights* weights, std::vector<HexMove> moves)
 
 HexBoard::~HexBoard()
 {
-    
+
 }
 
 std::unique_ptr<AbstractBoard> HexBoard::GetBoard(bool expanded) const
