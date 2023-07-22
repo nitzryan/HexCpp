@@ -580,3 +580,11 @@ const std::vector<Chain>* HexBoardTree::GetChainList(bool red) const
     }
     return &blueChains;
 }
+
+long HexBoardTree::GetBoardsEvaulated() const
+{
+    long count = 0;
+    for (auto& i : children)
+        count += i->GetBoardsEvaulated();
+    return count + 1;
+}

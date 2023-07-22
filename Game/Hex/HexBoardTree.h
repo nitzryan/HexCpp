@@ -76,6 +76,7 @@ public:
 
     const std::vector<Chain>* GetChainList(bool red) const;
     void SetWeights(HexWeights* w) { weights = *w; }
+    long GetBoardsEvaulated() const;
 private:
     std::vector<std::unique_ptr<HexBoardTree>> children;
     std::vector<short> remainingMoves;

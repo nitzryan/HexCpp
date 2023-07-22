@@ -78,12 +78,10 @@ void HexBoard::ExpandBoardEval(float time)
 {
     auto start = std::chrono::high_resolution_clock::now();
     auto end = start + std::chrono::milliseconds((int)(time * 1000.f));
-    long count = 0;
     while (std::chrono::high_resolution_clock::now() < end) {
         root->ExpandTree();
-        count++;
     }
-    qDebug() << count;
+    qDebug() << root->GetBoardsEvaulated();
 }
 
 void HexBoard::PruneBoard()
