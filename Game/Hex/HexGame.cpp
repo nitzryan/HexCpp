@@ -40,7 +40,7 @@ bool HexGame::NextMoveIsRed() const
     return currentBoard->GetNextPlayerToMove() == 0;
 }
 
-std::unique_ptr<AbstractBoard> HexGame::GetBoard(int size, AbstractWeights* weights, std::vector<std::unique_ptr<AbstractMove>> moves) const
+std::unique_ptr<AbstractBoard> HexGame::GetBoard(int s, AbstractWeights* weights, std::vector<std::unique_ptr<AbstractMove>> moves) const
 {
     HexWeights* hexWeights = dynamic_cast<HexWeights*> (weights);
     if (hexWeights == nullptr) { // Invalid weights
@@ -56,5 +56,5 @@ std::unique_ptr<AbstractBoard> HexGame::GetBoard(int size, AbstractWeights* weig
         hexMoves.push_back(*hexMove);
     }
 
-    return std::make_unique<HexBoard>(size, hexWeights, hexMoves);
+    return std::make_unique<HexBoard>(s, hexWeights, hexMoves);
 }

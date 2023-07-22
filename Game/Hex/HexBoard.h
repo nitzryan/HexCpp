@@ -1,12 +1,6 @@
 #ifndef HEXBOARD_H
 #define HEXBOARD_H
 
-#ifdef BUILD_DLL
-#define EXPORT __declspec(dllexport)
-#else
-#define EXPORT 
-#endif
-
 #include "../AbstractBoard.h"
 #include "HexMove.h"
 #include "HexBoardTree.h"
@@ -14,7 +8,7 @@
 #include <vector>
 #include <memory>
 
-class EXPORT HexBoard : public AbstractBoard
+class HexBoard : public AbstractBoard
 {
 public:
     /**
@@ -85,7 +79,7 @@ public:
     bool IsMoveLegal(const std::unique_ptr<AbstractMove>& move) const override;
     std::vector<std::string> GetMoveNotations() const;
     std::vector<Hex::Tile> GetTiles() const;
-    int GetSize() const;
+    int GetSize() const override;
     std::unique_ptr<AbstractTreeData> GetTreeData() const override;
     std::unique_ptr<AbstractMove> GetChosenMove() const override;
     void SetWeights(AbstractWeights* weights) override;

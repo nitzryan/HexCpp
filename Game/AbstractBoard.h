@@ -81,6 +81,7 @@ public:
      * @return
      */
     virtual std::vector<std::unique_ptr<AbstractMove>> GetMoves() const = 0;
+    virtual int GetSize() const = 0;
 };
 
 #endif // ABSTRACTBOARD_H

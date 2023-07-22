@@ -33,11 +33,21 @@ HexBoard::HexBoard(int size, HexWeights* weights, std::vector<HexMove> moves)
 {
     int size2 = size * size;
     this->size = size;
-    this->moves = std::vector<std::unique_ptr<HexMove>>(0);
+    this->moves.reserve(moves.size());
+
     tiles = std::vector<Hex::Tile>(size2);
     for (auto& i : tiles) {
         i = Hex::Tile::Empty;
     }
+    for (auto& i : moves)
+    {
+        this->moves.emplace_back(std::make_unique<HexMove>(i));
+        if (i.IsRed())
+            tiles.at(i.GetTile()) = Hex::Tile::Red;
+        else
+            tiles.at(i.GetTile()) = Hex::Tile::Blue;
+    }
+    
     helper = std::make_unique<HexBoardHelper>(size);
     root = HexBoardTree::CreateTree(size, weights, helper.get(), moves);
 }

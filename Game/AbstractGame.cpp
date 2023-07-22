@@ -5,6 +5,7 @@
 AbstractGame::AbstractGame(std::unique_ptr<AbstractBoard> b)
 {
     board = b->GetBoard(false);
+    size = b->GetSize();
     boardStates.emplace_back(std::move(b));
 }
 
@@ -143,7 +144,7 @@ void AbstractGame::StartFromCurrentState()
 void AbstractGame::EvaluateBoard(std::unique_ptr<AbstractWeights> weights, float time)
 {
     auto currentMoves = boardStates.at(uncommitedBoardStateId)->GetMoves();
-    auto currentBoard = GetBoard(7, weights.get(), std::move(currentMoves));
+    auto currentBoard = GetBoard(size, weights.get(), std::move(currentMoves));
     currentBoard->ExpandBoardEval(time);
     callback(currentBoard->GetTreeData(), nullptr);
 }

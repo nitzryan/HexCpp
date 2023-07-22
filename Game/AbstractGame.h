@@ -96,6 +96,7 @@ protected:
     std::vector<std::unique_ptr<AbstractAI>>::iterator currentPlayer;
     std::unique_ptr<AbstractBoard> GetCurrentBoardState() const;
     std::unique_ptr<AbstractBoard> board;
+    int size;
 private:
     std::mutex mutex;
     std::future<void> MakeMoveAsync;
