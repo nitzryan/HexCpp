@@ -33,6 +33,8 @@ HexBoardTree::HexBoardTree(short s, HexWeights* w, HexBoardHelper* h)
     placedTiles = BitArray(boardTiles);
     redAdjacencies = BitArray(boardTiles);
     blueAdjacencies = BitArray(boardTiles);
+    redTiles = BitArray(boardTiles);
+    blueTiles = BitArray(boardTiles);
 }
 
 HexBoardTree::HexBoardTree(const std::unique_ptr<HexBoardTree>& base)
@@ -61,6 +63,8 @@ HexBoardTree::HexBoardTree(const std::unique_ptr<HexBoardTree>& base)
     placedTiles = BitArray(&base->placedTiles);
     redAdjacencies = BitArray(&base->redAdjacencies);
     blueAdjacencies = BitArray(&base->blueAdjacencies);
+    redTiles = BitArray(&base->redTiles);
+    blueTiles = BitArray(&base->blueTiles);
 
     // Chains/Templates/Edges (needs mapping)
     redChains = base->redChains;
@@ -69,6 +73,8 @@ HexBoardTree::HexBoardTree(const std::unique_ptr<HexBoardTree>& base)
     blueTemplates = base->blueTemplates;
     redEdges = base->redEdges;
     blueEdges = base->blueEdges;
+    rsEdges = base->rsEdges;
+    bsEdges = base->bsEdges;
 }
 
 HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
@@ -92,6 +98,8 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
     redAdjacencies.UnsetBit(move);
     blueAdjacencies = BitArray(&base.blueAdjacencies);
     blueAdjacencies.UnsetBit(move);
+    redTiles = BitArray(&base.redTiles);
+    blueTiles = BitArray(&base.blueTiles);
 
     // Copy chains, reserve space for new chain
     redChains = base.redChains;
@@ -106,19 +114,21 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
     redEdges.reserve(redEdges.size() + 1);
     blueEdges = base.blueEdges;
     blueEdges.reserve(blueEdges.size() + 1);
+    rsEdges = base.rsEdges;
+    rsEdges.reserve(rsEdges.size() + 1);
+    bsEdges = base.rsEdges;
+    bsEdges.reserve(rsEdges.size() + 1);
 
     // Remove templates of current color that were broken by opponent
     auto templateList = base.isRed ? &redTemplates : &blueTemplates;
     auto otherTemplateList = base.isRed ? &blueTemplates : &redTemplates;
-    templateList->erase(std::remove_if(templateList->begin(), templateList->end(), [](const Template& t) {
-        return t.IsBroken();
-        }), templateList->end());
-
+    
+    auto sEdgeList = base.isRed ? &rsEdges : &bsEdges;
+    auto sOthEdgeList = base.isRed ? &bsEdges : &rsEdges;
     
     auto edgeList = base.isRed ? &redEdges : &blueEdges;
     auto otherEdgeList = base.isRed ? &blueEdges : &redEdges;
     
-
     // Set all chains/templates as non-traversed
     for (auto& i : redTemplates) {
         i.SetVisited(false);
@@ -146,9 +156,11 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
     // Update adjacencies
     if (isRed) {
         redAdjacencies = BitArray::Or(&redAdjacencies, newChain.GetAdjacencies());
+        blueTiles.SetBit(move);
     }
     else {
         blueAdjacencies = BitArray::Or(&blueAdjacencies, newChain.GetAdjacencies());
+        redTiles.SetBit(move);
     }
 
     // Cleanup any chains that were merged with new chain
@@ -188,6 +200,10 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
             for (auto& e : *edgeList) {
                 e.RemapAddresses(&(*oldList)[i], &(*chainList)[jj]);
             }
+
+            for (auto& se : *sEdgeList) {
+                se.RemapAddresses(&(*oldList)[i], &(*chainList)[jj]);
+            }
             jj++;
         }
     }
@@ -202,15 +218,24 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
         for (auto& e : *otherEdgeList) {
             e.RemapAddresses(&(*otherOldList)[i], &(*otherChainList)[i]);
         }
+        for (auto& se : *sOthEdgeList) {
+            se.RemapAddresses(&(*otherOldList)[i], &(*otherChainList)[i]);
+        }
     }
 
-    // Remove edges of current color which were broken by opponent last move
-    edgeList->erase(std::remove_if(edgeList->begin(), edgeList->end(), [this](const Edge& e) {
-        return e.IsStillEdge(helper);
-        }), edgeList->end());
+    
 
     // Check other chains for templates with new chain
     chainList->push_back(newChain);
+
+    // Check for special edges
+    BitArray spEdgeAdj;
+    short seRank = 0;
+    if (newChain.GetMaxRank() > size / 2) {
+        seRank = size - 1;
+    }
+    if (SpecialEdge::ShouldBeEdge1(move, base.isRed, base.isRed ? &blueTiles : &redTiles, spEdgeAdj, helper))
+        sEdgeList->emplace_back(&chainList->back(), seRank, spEdgeAdj);
     
     for (size_t i = 0; i < chainList->size() - 1; i++) {
         if (Template::IsATemplate(&chainList->back(), &(*chainList)[i])) {
@@ -262,8 +287,13 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
     for (auto& i : *otherChainList) {
         i.OpponentTilePlaced(move);
     }
+
     for (auto& i : *otherTemplateList) {
         i.CheckToBreak(move);
+    }
+
+    for (auto& i : *sOthEdgeList) {
+        i.OpponentMoveMade(move);
     }
 
     // Calculate Heuristic Score
@@ -298,10 +328,10 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
     auto longBlue = longestChainLength(blueChains);
 
     // Longest Template/Edge Length
-    auto longestTemplateLength = [](std::vector<Chain>& c, std::vector<Template>& t, std::vector<Edge>& e) {
+    auto longestTemplateLength = [](std::vector<Chain>& c, std::vector<Template>& t, std::vector<Edge>& e, std::vector<SpecialEdge>& se) {
         // Checks all templates, and gets min/max rank of other chains on that template
-        std::function<void(int&, int&, Chain*, std::vector<Template>&, std::vector<Edge>&)> getRank = 
-                            [&](int& min, int& max, Chain* chain, std::vector<Template>& templates, std::vector<Edge>& edges) {
+        std::function<void(int&, int&, Chain*, std::vector<Template>&, std::vector<Edge>&, std::vector<SpecialEdge>&)> getRank = 
+                            [&](int& min, int& max, Chain* chain, std::vector<Template>& templates, std::vector<Edge>& edges, std::vector<SpecialEdge>& sEdges) {
             if (chain->Traversed()) {
                 return;
             }
@@ -315,7 +345,7 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
             for (auto& t : templates) {
                 Chain* otherChain = t.GetOtherChain(chain);
                 if (otherChain != nullptr && !otherChain->Traversed()) {
-                    getRank(min, max, otherChain, templates, edges);
+                    getRank(min, max, otherChain, templates, edges, sEdges);
                 }
             }
             // Check if edge increases or decreases rank
@@ -330,6 +360,17 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
                     }
                 }
             }
+            
+            for (auto& se : sEdges) {
+                if (se.GetChain() == chain) {
+                    auto rank = se.GetRank();
+                    if (rank < min)
+                        min = 0;
+                    else
+                        max = rank;
+                }
+            }
+            
         };
 
         // Iterate through chains to find longest template
@@ -337,15 +378,15 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
         for (auto& i : c) {
             int minRank = std::numeric_limits<int>::max();
             int maxRank = -1;
-            getRank(minRank, maxRank, &i, t, e);
+            getRank(minRank, maxRank, &i, t, e, se);
             auto rankDif = maxRank - minRank;
             longest = (rankDif > longest) ? rankDif : longest;
         }
         return longest;
     };
 
-    auto longTemplateRed = longestTemplateLength(redChains, redTemplates, redEdges);
-    auto longTemplateBlue = longestTemplateLength(blueChains, blueTemplates, blueEdges);
+    auto longTemplateRed = longestTemplateLength(redChains, redTemplates, redEdges, rsEdges);
+    auto longTemplateBlue = longestTemplateLength(blueChains, blueTemplates, blueEdges, bsEdges);
 
     // Appply lengths to scores
     if (longRed == size - 1) { // Red Wins
@@ -375,6 +416,19 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
     if (std::isnan(score) || std::abs(score) > 2 * MAX_SCORE) { // Should not occur
         score = score + 1;
     }
+
+    // Delete any broken templates/edges
+    otherTemplateList->erase(std::remove_if(otherTemplateList->begin(), otherTemplateList->end(), [](const Template& t) {
+        return t.IsBroken();
+        }), otherTemplateList->end());
+
+    sOthEdgeList->erase(std::remove_if(sOthEdgeList->begin(), sOthEdgeList->end(), [](const SpecialEdge& se) {
+        return se.IsBroken();
+        }), sOthEdgeList->end());
+
+    otherEdgeList->erase(std::remove_if(otherEdgeList->begin(), otherEdgeList->end(), [this](const Edge& e) {
+        return !e.IsStillEdge(helper);
+        }), otherEdgeList->end());
 }
 
 std::unique_ptr<HexBoardTree> HexBoardTree::CreateTree(short numTiles, HexWeights* w, HexBoardHelper* h, std::vector<HexMove> moveList)

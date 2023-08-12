@@ -9,6 +9,7 @@
 #include "Template.h"
 #include "HexBoardHelper.h"
 #include "Edge.h"
+#include "SpecialEdge.h"
 
 class HexBoardTree
 {
@@ -94,9 +95,10 @@ private:
     std::vector<Chain> redChains, blueChains;
     std::vector<Template> redTemplates, blueTemplates;
     std::vector<Edge> redEdges, blueEdges;
+    std::vector<SpecialEdge> rsEdges, bsEdges;
     const HexBoardHelper* helper;
 
-    BitArray placedTiles, redAdjacencies, blueAdjacencies;
+    BitArray placedTiles, redAdjacencies, blueAdjacencies, redTiles, blueTiles;
 };
 
 #endif // HEXBOARDTREE_H

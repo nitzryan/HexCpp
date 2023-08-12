@@ -1,4 +1,6 @@
 #include "HexBoardHelper.h"
+#include <array>
+#include "EdgeTemplateAssembler.h"
 
 HexBoardHelper::HexBoardHelper(short s) {
 	size = s;
@@ -23,6 +25,8 @@ HexBoardHelper::HexBoardHelper(short s) {
 		}
 		blueRankArray.push_back(BitArray(size * size, tiles));
 	}
+
+	oneTileEdges = InitializeMap(size);
 }
 
 const BitArray* HexBoardHelper::GetRankBitArrayRed(short rank) const {
@@ -31,4 +35,49 @@ const BitArray* HexBoardHelper::GetRankBitArrayRed(short rank) const {
 
 const BitArray* HexBoardHelper::GetRankBitArrayBlue(short rank) const {
 	return &blueRankArray.at(rank);
+}
+
+bool HexBoardHelper::IsEdge1(short tile, bool isRed, const BitArray* notOpposingTiles, BitArray& templateTiles) const
+{
+	Key1 key;
+	key.tile = tile;
+	key.red = isRed;
+
+	auto it = oneTileEdges.find(key);
+	if (it == oneTileEdges.end())
+		return false;
+
+	// Potential edge was found
+	std::vector<BitArray> templateVector = it->second;
+	for (auto& v : templateVector) {
+		auto notArray = BitArray::Not(notOpposingTiles);
+		auto tmp = BitArray::And(&notArray, &v);
+		if (BitArray::Equal(&tmp, &v))
+		{
+			templateTiles = v;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+std::map<Key1, std::vector<BitArray>> HexBoardHelper::InitializeMap(short size)
+{
+	std::map<Key1, std::vector<BitArray>> result;
+	// 3rd row edge templates
+	auto t1 = EdgeTemplateAssembler::CreateTemplateOneTile(size, { {0,1},{1,-1},{1,0},{1,1},{2,-2},{2,-1},{2,0},{2,1} });
+	auto t2 = EdgeTemplateAssembler::CreateTemplateOneTile(size, { {0,-1},{1,-2},{1,-1},{1,0},{2,-1},{2,-2},{2,-1},{2,0} });
+	for (const auto& i : t1) {
+		result.insert(std::pair(i.first, std::vector<BitArray>{ i.second }));
+	}
+	for (const auto& i : t2) {
+		auto it = result.find(i.first);
+		if (it == result.end())
+			result.insert(std::pair(i.first, std::vector<BitArray>{ i.second }));
+		else
+			result.at(i.first).push_back(i.second);
+	}
+
+	return result;
 }

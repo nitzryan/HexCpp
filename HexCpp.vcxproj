@@ -228,7 +228,9 @@
   <ItemGroup>
     <ClCompile Include="Database\sqlite3.c" />
     <ClCompile Include="Game\Hex\Edge.cpp" />
+    <ClCompile Include="Game\Hex\EdgeTemplateAssembler.cpp" />
     <ClCompile Include="Game\Hex\HexBoardHelper.cpp" />
+    <ClCompile Include="Game\Hex\SpecialEdge.cpp" />
     <ClCompile Include="UI\ControlBar.cpp" />
     <ClCompile Include="UI\EvalBar.cpp" />
     <ClCompile Include="UI\EvalTree.cpp" />
@@ -273,6 +275,7 @@
     <ClInclude Include="Game\Hex\BitArray.h" />
     <ClInclude Include="Game\Hex\Chain.h" />
     <ClInclude Include="Game\Hex\Edge.h" />
+    <ClInclude Include="Game\Hex\EdgeTemplateAssembler.h" />
     <ClInclude Include="Game\Hex\HexAI.h" />
     <ClInclude Include="Game\Hex\HexBoard.h" />
     <ClInclude Include="Game\Hex\HexBoardHelper.h" />
@@ -282,6 +285,7 @@
     <ClInclude Include="Game\Hex\HexTreeData.h" />
     <ClInclude Include="Game\Hex\HexTreeNode.h" />
     <ClInclude Include="Game\Hex\HexWeights.h" />
+    <ClInclude Include="Game\Hex\SpecialEdge.h" />
     <ClInclude Include="Game\Hex\Template.h" />
     <QtMoc Include="UI\MoveViewer.h" />
     <ClInclude Include="UI\UI.h" />

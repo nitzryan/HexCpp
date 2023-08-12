@@ -85,6 +85,7 @@ public:
     * @return 
     */
     static bool Equal(const BitArray* a, const BitArray* b);
+    bool BitIsSet(short bit) const;
 private:
     std::vector<uint32_t> bits;
 
