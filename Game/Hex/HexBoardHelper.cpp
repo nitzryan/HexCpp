@@ -62,12 +62,49 @@ bool HexBoardHelper::IsEdge1(short tile, bool isRed, const BitArray* notOpposing
 	return false;
 }
 
+void HexBoardHelper::CalculateRank(const BitArray& maxTiles, const BitArray& minTiles, char& minRank, char& maxRank, bool isRed) const
+{
+	minRank = (char)size;
+	maxRank = 0;
+
+	auto TileInRank = [](const BitArray& test, const BitArray& tiles) {
+		BitArray merged = BitArray::And(&tiles, &test);
+		return merged.AtLeaseOneBit();
+	};
+
+	const std::vector<BitArray>* arr;
+	if (isRed) {
+		arr = &redRankArray;
+	}
+	else {
+		arr = &blueRankArray;
+	}
+
+	for (char i = 0; i < arr->size(); i++)
+	{
+		if (TileInRank(arr->at(i), minTiles))
+		{
+			minRank = i;
+			break;
+		}
+	}
+
+	for (char i = (char)(arr->size() - 1); i >= 0; i--) 
+	{
+		if (TileInRank(arr->at(i), maxTiles))
+		{
+			maxRank = i;
+			break;
+		}
+	}
+}
+
 std::map<Key1, std::vector<BitArray>> HexBoardHelper::InitializeMap(short size)
 {
 	std::map<Key1, std::vector<BitArray>> result;
 	// 3rd row edge templates
 	auto t1 = EdgeTemplateAssembler::CreateTemplateOneTile(size, { {0,1},{1,-1},{1,0},{1,1},{2,-2},{2,-1},{2,0},{2,1} });
-	auto t2 = EdgeTemplateAssembler::CreateTemplateOneTile(size, { {0,-1},{1,-2},{1,-1},{1,0},{2,-1},{2,-2},{2,-1},{2,0} });
+	auto t2 = EdgeTemplateAssembler::CreateTemplateOneTile(size, { {0,-1},{1,-2},{1,-1},{1,0},{2,-3},{2,-2},{2,-1},{2,0} });
 	for (const auto& i : t1) {
 		result.insert(std::pair(i.first, std::vector<BitArray>{ i.second }));
 	}

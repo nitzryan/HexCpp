@@ -10,6 +10,7 @@
 #include "HexBoardHelper.h"
 #include "Edge.h"
 #include "SpecialEdge.h"
+#include "Poison.h"
 
 class HexBoardTree
 {
@@ -99,6 +100,7 @@ private:
     const HexBoardHelper* helper;
 
     BitArray placedTiles, redAdjacencies, blueAdjacencies, redTiles, blueTiles;
+    Poison redPoison, bluePoison;
 };
 
 #endif // HEXBOARDTREE_H

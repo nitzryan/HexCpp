@@ -23,6 +23,7 @@ public:
 	const BitArray* GetRankBitArrayRed(short rank) const;
 	const BitArray* GetRankBitArrayBlue(short rank) const;
 	bool IsEdge1(short tile, bool isRed, const BitArray* notOpposingTiles, BitArray& templateTiles) const;
+	void CalculateRank(const BitArray& maxTiles, const BitArray& minTiles, char& minRank, char& maxRank, bool isRed) const;
 private:
 	std::vector<BitArray> redRankArray, blueRankArray;
 	std::map<Key1, std::vector<BitArray>> oneTileEdges;

@@ -183,7 +183,7 @@
     <ClCompile>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
@@ -230,6 +230,7 @@
     <ClCompile Include="Game\Hex\Edge.cpp" />
     <ClCompile Include="Game\Hex\EdgeTemplateAssembler.cpp" />
     <ClCompile Include="Game\Hex\HexBoardHelper.cpp" />
+    <ClCompile Include="Game\Hex\Poison.cpp" />
     <ClCompile Include="Game\Hex\SpecialEdge.cpp" />
     <ClCompile Include="UI\ControlBar.cpp" />
     <ClCompile Include="UI\EvalBar.cpp" />
@@ -285,6 +286,7 @@
     <ClInclude Include="Game\Hex\HexTreeData.h" />
     <ClInclude Include="Game\Hex\HexTreeNode.h" />
     <ClInclude Include="Game\Hex\HexWeights.h" />
+    <ClInclude Include="Game\Hex\Poison.h" />
     <ClInclude Include="Game\Hex\SpecialEdge.h" />
     <ClInclude Include="Game\Hex\Template.h" />
     <QtMoc Include="UI\MoveViewer.h" />

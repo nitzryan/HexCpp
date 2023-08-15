@@ -37,7 +37,9 @@ Chain::Chain(short tile, short size, bool isRed, BitArray* placedTiles)
     // Set rank
     minRank = isRed ? static_cast<char>(row) : static_cast<char>(col);
     maxRank = minRank;
-    rankedTiles.push_back(tile);
+
+    maxRankedTiles = BitArray(size2, tile);
+    minRankedTiles = BitArray(size2, tile);
 }
 
 bool Chain::ShouldMerge(const Chain &other) const
@@ -57,12 +59,12 @@ void Chain::MergeWith(Chain* other)
     // Set rank
     minRank = std::min(minRank, other->minRank);
     maxRank = std::max(maxRank, other->maxRank);
-    for (auto i : other->rankedTiles) {
-        rankedTiles.push_back(i);
-    }
 
     // Mark other for deletion, so that HexBoardTree knows to remove
     other->shouldDelete = true;
+
+    minRankedTiles = BitArray::Or(&minRankedTiles, &other->minRankedTiles);
+    maxRankedTiles = BitArray::Or(&maxRankedTiles, &other->maxRankedTiles);
 }
 
 void Chain::OpponentTilePlaced(short move)
@@ -83,4 +85,14 @@ bool Chain::ShouldDelete() const
 char Chain::GetChainLength() const
 {
     return maxRank - minRank;
+}
+
+void Chain::ApplyPoison(BitArray maxPoison, BitArray minPoison, const HexBoardHelper* helper)
+{
+    auto tmp = BitArray::Not(&maxPoison);
+    maxRankedTiles = BitArray::And(&maxRankedTiles, &tmp);
+    tmp = BitArray::Not(&minPoison);
+    minRankedTiles = BitArray::And(&minRankedTiles, &tmp);
+
+    helper->CalculateRank(maxRankedTiles, minRankedTiles, minRank, maxRank, isRed);
 }

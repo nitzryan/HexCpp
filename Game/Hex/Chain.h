@@ -2,6 +2,7 @@
 #define CHAIN_H
 
 #include "BitArray.h"
+#include "HexBoardHelper.h"
 #include <vector>
 
 class Chain
@@ -18,17 +19,16 @@ public:
     char GetMinRank() const { return minRank; }
     char GetMaxRank() const { return maxRank; }
     bool IsRed() const { return isRed; }
-    size_t getRankedTilesLength() const { return rankedTiles.size(); }
     const BitArray* GetAdjacencies() const { return &adjacent; }
-    short TemporaryFunction() const { return rankedTiles[0]; }
+    void ApplyPoison(BitArray maxPoison, BitArray minPoison, const HexBoardHelper* helper);
 private:
     BitArray tiles;
+    BitArray maxRankedTiles, minRankedTiles;
     BitArray adjacent;
     char minRank, maxRank; // Ignors values that can't be moved forward from
     bool traversed = false;
     bool shouldDelete = false;
     bool isRed;
-    std::vector<short> rankedTiles; // Tiles that contribute to the min/max rank
 };
 
 #endif // CHAIN_H

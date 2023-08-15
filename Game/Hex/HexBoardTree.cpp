@@ -35,6 +35,9 @@ HexBoardTree::HexBoardTree(short s, HexWeights* w, HexBoardHelper* h)
     blueAdjacencies = BitArray(boardTiles);
     redTiles = BitArray(boardTiles);
     blueTiles = BitArray(boardTiles);
+
+    redPoison = Poison(s, true);
+    bluePoison = Poison(s, false);
 }
 
 HexBoardTree::HexBoardTree(const std::unique_ptr<HexBoardTree>& base)
@@ -75,6 +78,9 @@ HexBoardTree::HexBoardTree(const std::unique_ptr<HexBoardTree>& base)
     blueEdges = base->blueEdges;
     rsEdges = base->rsEdges;
     bsEdges = base->bsEdges;
+
+    redPoison = Poison(base->redPoison);
+    bluePoison = Poison(base->bluePoison);
 }
 
 HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
@@ -119,6 +125,9 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
     bsEdges = base.rsEdges;
     bsEdges.reserve(rsEdges.size() + 1);
 
+    redPoison = Poison(base.redPoison);
+    bluePoison = Poison(base.bluePoison);
+
     // Remove templates of current color that were broken by opponent
     auto templateList = base.isRed ? &redTemplates : &blueTemplates;
     auto otherTemplateList = base.isRed ? &blueTemplates : &redTemplates;
@@ -128,7 +137,13 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
     
     auto edgeList = base.isRed ? &redEdges : &blueEdges;
     auto otherEdgeList = base.isRed ? &blueEdges : &redEdges;
+
+    auto thisPoison = base.isRed ? &redPoison : &bluePoison;
+    auto othPoison = base.isRed ? &bluePoison : &redPoison;
     
+    if (move == 23 && base.move == 18)
+        move = 23;
+
     // Set all chains/templates as non-traversed
     for (auto& i : redTemplates) {
         i.SetVisited(false);
@@ -147,6 +162,14 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
     auto chainList = base.isRed ? &redChains : &blueChains;
     auto oldList = base.isRed ? &base.redChains : &base.blueChains;
     Chain newChain(move, size, base.isRed, &placedTiles);
+
+    // Check for special edges
+    BitArray spEdgeAdj;
+    short seRank = 0;
+    if (newChain.GetMaxRank() > size / 2) {
+        seRank = size - 1;
+    }
+
     for (auto& i : *chainList) {
         if (newChain.ShouldMerge(i)) {
             newChain.MergeWith(&i);
@@ -223,17 +246,14 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
         }
     }
 
-    
+    // Apply poison to chain
+    newChain.ApplyPoison(thisPoison->GetMax(), thisPoison->GetMin(), helper);
+    othPoison->PlaceTile(move, size, base.isRed);
+    for (auto& i : *otherChainList)
+        i.ApplyPoison(othPoison->GetMax(), othPoison->GetMin(), helper);
 
     // Check other chains for templates with new chain
     chainList->push_back(newChain);
-
-    // Check for special edges
-    BitArray spEdgeAdj;
-    short seRank = 0;
-    if (newChain.GetMaxRank() > size / 2) {
-        seRank = size - 1;
-    }
     if (SpecialEdge::ShouldBeEdge1(move, base.isRed, base.isRed ? &blueTiles : &redTiles, spEdgeAdj, helper))
         sEdgeList->emplace_back(&chainList->back(), seRank, spEdgeAdj);
     
@@ -352,7 +372,7 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
             for (auto& e : edges) {
                 if (e.GetChain() == chain) {
                     auto rank = e.GetRank();
-                    if (rank < min) {
+                    if (rank == 0) {
                         min = 0;
                     }
                     else {
@@ -364,7 +384,7 @@ HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
             for (auto& se : sEdges) {
                 if (se.GetChain() == chain) {
                     auto rank = se.GetRank();
-                    if (rank < min)
+                    if (rank == 0)
                         min = 0;
                     else
                         max = rank;

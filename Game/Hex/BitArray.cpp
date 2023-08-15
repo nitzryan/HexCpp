@@ -127,5 +127,5 @@ bool BitArray::Equal(const BitArray* a, const BitArray* b)
 
 bool BitArray::BitIsSet(short bit) const
 {
-    return bits[bit/32] && (1 << bit);
+    return bits[bit/32] & (1 << (bit % 32));
 }
