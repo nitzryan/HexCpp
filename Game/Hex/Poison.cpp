@@ -72,6 +72,9 @@ void Poison::PlaceMaxRed(short tile, short size)
 {
 	if (maxAdj.BitIsSet(tile))
 	{
+		if (maxPoison.BitIsSet(tile))
+			return;
+
 		maxPoison.SetBit(tile);
 		short row = tile / size;
 		short col = tile % size;
