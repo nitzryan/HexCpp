@@ -10,6 +10,7 @@ public:
     Template(Chain* a, Chain* b);
     void UpdateAdjacencies();
     void SetVisited(bool v) { visited = v; }
+    bool IsVisited() const { return visited; }
     bool IsBroken() const;
     void CheckToBreak(short move);
     Chain* GetOtherChain(const Chain* chain) const;
@@ -18,6 +19,7 @@ public:
     void GetChains(const Chain** a, const Chain** b) { *a = one; *b = two; }
     static bool SameTemplate(const Template* t1, const Template* t2);
     static bool IsATemplate(const Chain* c1, const Chain* c2);
+    const BitArray* GetTiles() const { return &sharedAdjacentTiles; }
 private:
     bool broken = false; // Causes it to not immedately go away, so that AI doesn't think breaking a Template
     // is a good move, but that it will go away before the response so that the ai will likely connect them

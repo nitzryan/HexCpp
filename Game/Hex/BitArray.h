@@ -1,7 +1,6 @@
 #ifndef BITARRAY_H
 #define BITARRAY_H
 
-#include <cstdint>
 #include <vector>
 
 class BitArray
@@ -86,6 +85,12 @@ public:
     */
     static bool Equal(const BitArray* a, const BitArray* b);
     bool BitIsSet(short bit) const;
+    std::vector<short> GetTiles() const;
+
+    BitArray& operator=(const BitArray& ba) {
+        bits = ba.bits;
+        return *this;
+    }
 private:
     std::vector<uint32_t> bits;
 

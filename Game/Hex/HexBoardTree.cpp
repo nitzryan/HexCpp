@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <functional>
+#include "HBTMethods.h"
 
 #define MAX_SCORE 10000.0f
 
@@ -31,8 +32,6 @@ HexBoardTree::HexBoardTree(short s, HexWeights* w, HexBoardHelper* h)
 
     // BitArrays
     placedTiles = BitArray(boardTiles);
-    redAdjacencies = BitArray(boardTiles);
-    blueAdjacencies = BitArray(boardTiles);
     redTiles = BitArray(boardTiles);
     blueTiles = BitArray(boardTiles);
 
@@ -64,8 +63,6 @@ HexBoardTree::HexBoardTree(const std::unique_ptr<HexBoardTree>& base)
 
     // BitArrays
     placedTiles = BitArray(&base->placedTiles);
-    redAdjacencies = BitArray(&base->redAdjacencies);
-    blueAdjacencies = BitArray(&base->blueAdjacencies);
     redTiles = BitArray(&base->redTiles);
     blueTiles = BitArray(&base->blueTiles);
 
@@ -83,372 +80,54 @@ HexBoardTree::HexBoardTree(const std::unique_ptr<HexBoardTree>& base)
     bluePoison = Poison(base->bluePoison);
 }
 
-HexBoardTree::HexBoardTree(const HexBoardTree& base, short move)
+HexBoardTree::HexBoardTree(const HexBoardTree& base, short mv)
 {
-    // Initialize
-    children.reserve(base.remainingMoves.size());
-    remainingMoves = base.remainingMoves;
-    remainingMoves.erase(std::find(remainingMoves.begin(), remainingMoves.end(), move)); // No error check, it will exist
-
-    isRed = !base.isRed;
-    weights = base.weights;
-    this->move = move;
-    boardTiles = base.boardTiles;
-    size = base.size;
-    helper = base.helper;
-
-    // BitArrays
-    placedTiles = BitArray(&base.placedTiles);
-    placedTiles.SetBit(move);
-    redAdjacencies = BitArray(&base.redAdjacencies);
-    redAdjacencies.UnsetBit(move);
-    blueAdjacencies = BitArray(&base.blueAdjacencies);
-    blueAdjacencies.UnsetBit(move);
-    redTiles = BitArray(&base.redTiles);
-    blueTiles = BitArray(&base.blueTiles);
-
-    // Copy chains, reserve space for new chain
-    redChains = base.redChains;
-    redChains.reserve(redChains.size() + 1);
-    blueChains = base.blueChains;
-    blueChains.reserve(blueChains.size() + 1);
-    redTemplates = base.redTemplates;
-    redTemplates.reserve(redTemplates.size() + 1);
-    blueTemplates = base.blueTemplates;
-    blueTemplates.reserve(blueTemplates.size() + 1);
-    redEdges = base.redEdges;
-    redEdges.reserve(redEdges.size() + 1);
-    blueEdges = base.blueEdges;
-    blueEdges.reserve(blueEdges.size() + 1);
-    rsEdges = base.rsEdges;
-    rsEdges.reserve(rsEdges.size() + 1);
-    bsEdges = base.rsEdges;
-    bsEdges.reserve(rsEdges.size() + 1);
-
-    redPoison = Poison(base.redPoison);
-    bluePoison = Poison(base.bluePoison);
-
-    // Remove templates of current color that were broken by opponent
+    CopyPreviousState(base, mv);
+    
+    // Point to lists based on same/opposite color
     auto templateList = base.isRed ? &redTemplates : &blueTemplates;
     auto otherTemplateList = base.isRed ? &blueTemplates : &redTemplates;
-    
     auto sEdgeList = base.isRed ? &rsEdges : &bsEdges;
     auto sOthEdgeList = base.isRed ? &bsEdges : &rsEdges;
-    
     auto edgeList = base.isRed ? &redEdges : &blueEdges;
     auto otherEdgeList = base.isRed ? &blueEdges : &redEdges;
-
-    auto thisPoison = base.isRed ? &redPoison : &bluePoison;
     auto othPoison = base.isRed ? &bluePoison : &redPoison;
-    
-    if (move == 23 && base.move == 18)
-        move = 23;
-
-    // Set all chains/templates as non-traversed
-    for (auto& i : redTemplates) {
-        i.SetVisited(false);
-    }
-    for (auto& i : blueTemplates) {
-        i.SetVisited(false);
-    }
-    for (auto& i : redChains) {
-        i.SetTraversed(false);
-    }
-    for (auto& i : blueChains) {
-        i.SetTraversed(false);
-    }
-
-    // Create new Chain
     auto chainList = base.isRed ? &redChains : &blueChains;
-    auto oldList = base.isRed ? &base.redChains : &base.blueChains;
-    Chain newChain(move, size, base.isRed, &placedTiles);
-
-    // Check for special edges
-    BitArray spEdgeAdj;
-    short seRank = 0;
-    if (newChain.GetMaxRank() > size / 2) {
-        seRank = size - 1;
-    }
-
-    for (auto& i : *chainList) {
-        if (newChain.ShouldMerge(i)) {
-            newChain.MergeWith(&i);
-        }
-    }
-
-    // Update adjacencies
-    if (isRed) {
-        redAdjacencies = BitArray::Or(&redAdjacencies, newChain.GetAdjacencies());
-        blueTiles.SetBit(move);
-    }
-    else {
-        blueAdjacencies = BitArray::Or(&blueAdjacencies, newChain.GetAdjacencies());
-        redTiles.SetBit(move);
-    }
-
-    // Cleanup any chains that were merged with new chain
-    // Keep track of deleted chains to use in address remapping
-    std::vector<bool> didDelete(chainList->size());
-    for (size_t i = 0; i < chainList->size(); i++) {
-        didDelete[i] = chainList->at(i).ShouldDelete();
-    }
-    chainList->erase(std::remove_if(chainList->begin(), chainList->end(), [](const Chain& c) {
-        return c.ShouldDelete();
-        }), chainList->end());
-    
-
-    // Delete any Template or Edge that has a Chain that was deleted
-    for (size_t i = 0; i < oldList->size(); i++) {
-        if (didDelete[i]) {
-            for (int t = (int)templateList->size() - 1; t >= 0; t--) {
-                if (templateList->at(t).ContainsChain(&oldList->at(i))) {
-                    templateList->erase(templateList->begin() + t);
-                }
-            }
-            for (int e = (int)edgeList->size() - 1; e >= 0; e--) {
-                if (&oldList->at(i) == edgeList->at(e).GetChain()){
-                    edgeList->erase(edgeList->begin() + e);
-                }
-            }
-        }
-    }
-
-    // Remap addresses of same color templates/edges
-    size_t jj = 0;
-    for (size_t i = 0; i < oldList->size(); i++) {
-        if (!didDelete[i]) {
-            for (auto& t : *templateList) {
-                t.Remap(&(*oldList)[i], &(*chainList)[jj]);
-            }
-            for (auto& e : *edgeList) {
-                e.RemapAddresses(&(*oldList)[i], &(*chainList)[jj]);
-            }
-
-            for (auto& se : *sEdgeList) {
-                se.RemapAddresses(&(*oldList)[i], &(*chainList)[jj]);
-            }
-            jj++;
-        }
-    }
-
-    // Remap addresses of other color templates
     auto otherChainList = base.isRed ? &blueChains : &redChains;
-    auto otherOldList = base.isRed ? &base.blueChains : &base.redChains;
-    for (size_t i = 0; i < otherOldList->size(); i++) {
-        for (auto& t : *otherTemplateList) {
-            t.Remap(&(*otherOldList)[i], &(*otherChainList)[i]);
-        }
-        for (auto& e : *otherEdgeList) {
-            e.RemapAddresses(&(*otherOldList)[i], &(*otherChainList)[i]);
-        }
-        for (auto& se : *sOthEdgeList) {
-            se.RemapAddresses(&(*otherOldList)[i], &(*otherChainList)[i]);
-        }
-    }
+    auto oldList = base.isRed ? &base.redChains : &base.blueChains;
+    auto thisTiles = base.isRed ? &redTiles : &blueTiles;
+    auto oppTiles = base.isRed ? &blueTiles : &redTiles;
 
-    // Apply poison to chain
-    newChain.ApplyPoison(thisPoison->GetMax(), thisPoison->GetMin(), helper);
-    othPoison->PlaceTile(move, size, base.isRed);
-    for (auto& i : *otherChainList)
-        i.ApplyPoison(othPoison->GetMax(), othPoison->GetMin(), helper);
-
-    // Check other chains for templates with new chain
-    chainList->push_back(newChain);
-    if (SpecialEdge::ShouldBeEdge1(move, base.isRed, base.isRed ? &blueTiles : &redTiles, spEdgeAdj, helper))
-        sEdgeList->emplace_back(&chainList->back(), seRank, spEdgeAdj);
     
-    for (size_t i = 0; i < chainList->size() - 1; i++) {
-        if (Template::IsATemplate(&chainList->back(), &(*chainList)[i])) {
-            templateList->push_back(Template(&chainList->back(), &chainList->at(i)));
-        }
-    }
+    
+    HBTMethods::CreateChain(mv, size, base.isRed, *chainList, *oldList, *templateList, *edgeList, *sEdgeList, placedTiles, *thisTiles, *oppTiles, helper);
+    if (base.isRed)
+        HBTMethods::RemapAddresses(blueTemplates, blueEdges, bsEdges, base.blueChains, blueChains);
+    else
+        HBTMethods::RemapAddresses(redTemplates, redEdges, rsEdges, base.redChains, redChains);
 
-    // Check if new chain should be an edge
-    if (Edge::ShouldBeEdge(&chainList->back(), 0, helper)) {
-        edgeList->push_back(Edge(&chainList->back(), 0, chainList->back().IsRed()));
-    }
-    if (Edge::ShouldBeEdge(&chainList->back(), (char)(size - 1), helper)) {
-        edgeList->push_back(Edge(&chainList->back(), (char)(size - 1), chainList->back().IsRed()));
-    }
+    othPoison->PlaceTile(mv, size, base.isRed);
 
-    // Check that all mappings are valid
-    for (auto& t : redTemplates) {
-        bool found = false;
-        for (auto& j : redChains) {
-            for (auto& i : redChains) {
-                const Chain* a1, * a2;
-                t.GetChains(&a1, &a2);
-                if (&i != &j && ((&i == a1 && &j == a2) || (&i == a2 && &j == a1))) {
-                    found = true;
-                }
-            }
-        }
-        if (found == false) {
-            break;
-        }
-    }
-    for (auto& t : blueTemplates) {
-        bool found = false;
-        for (auto& j : blueChains) {
-            for (auto& i : blueChains) {
-                const Chain* a1, * a2;
-                t.GetChains(&a1, &a2);
-                if (&i != &j && ((&i == a1 && &j == a2) || (&i == a2 && &j == a1))) {
-                    found = true;
-                }
-            }
-        }
-        if (found == false) {
-            break;
-        }
-    }
+    HBTMethods::PoisonUpdateTilesRanks(redPoison, size, false, helper, redChains, blueTemplates, blueEdges, bsEdges);
+    HBTMethods::PoisonUpdateTilesRanks(bluePoison, size, true, helper, blueChains, redTemplates, redEdges, rsEdges);
 
-    // Apply move to oppenent Chain/Edge/Template Adjacencies
-    for (auto& i : *otherChainList) {
-        i.OpponentTilePlaced(move);
-    }
+    auto longRed = HBTMethods::GetLongestChainLength(redChains);
+    auto longBlue = HBTMethods::GetLongestChainLength(blueChains);
+    auto longTemplateRed = HBTMethods::GetLongestTemplateLength(redChains, redTemplates, redEdges, rsEdges);
+    auto longTemplateBlue = HBTMethods::GetLongestTemplateLength(blueChains, blueTemplates, blueEdges, bsEdges);
 
-    for (auto& i : *otherTemplateList) {
-        i.CheckToBreak(move);
-    }
-
-    for (auto& i : *sOthEdgeList) {
-        i.OpponentMoveMade(move);
-    }
-
-    // Calculate Heuristic Score
-    // Center Penalty
-    auto halfSize = size / 2;
-    auto row = move / size;
-    auto col = move % size;
-    int rowPlusColOffset = (row < halfSize && col > halfSize) || (row > halfSize && col < halfSize) ?
-        std::max(std::abs(row - halfSize), std::abs(col - halfSize)) :
-        std::abs(row - halfSize) + std::abs(col - halfSize);
     centerScore = base.centerScore;
-    if (base.isRed) {
-        centerScore -= rowPlusColOffset * weights->CenterPenalty;
-    } else {
-        centerScore += rowPlusColOffset * weights->CenterPenalty;
-    }
-    heuristicScore = centerScore;
-
-    // Longest chain for red/blue
-    auto longestChainLength = [](std::vector<Chain>& c) {
-        int longest = 0;
-        for (auto& i : c) {
-            auto l = i.GetChainLength();
-            if (l > longest) {
-                longest = l;
-            }
-        }
-        return longest;
-    };
-
-    auto longRed = longestChainLength(redChains);
-    auto longBlue = longestChainLength(blueChains);
-
-    // Longest Template/Edge Length
-    auto longestTemplateLength = [](std::vector<Chain>& c, std::vector<Template>& t, std::vector<Edge>& e, std::vector<SpecialEdge>& se) {
-        // Checks all templates, and gets min/max rank of other chains on that template
-        std::function<void(int&, int&, Chain*, std::vector<Template>&, std::vector<Edge>&, std::vector<SpecialEdge>&)> getRank = 
-                            [&](int& min, int& max, Chain* chain, std::vector<Template>& templates, std::vector<Edge>& edges, std::vector<SpecialEdge>& sEdges) {
-            if (chain->Traversed()) {
-                return;
-            }
-            // Update Min/Max to include this chain
-            auto minr = chain->GetMinRank();
-            auto maxr = chain->GetMaxRank();
-            min = (minr < min) ? minr : min;
-            max = (maxr > max) ? maxr : max;
-            chain->SetTraversed(true);
-            // Recursively traverse templates
-            for (auto& t : templates) {
-                Chain* otherChain = t.GetOtherChain(chain);
-                if (otherChain != nullptr && !otherChain->Traversed()) {
-                    getRank(min, max, otherChain, templates, edges, sEdges);
-                }
-            }
-            // Check if edge increases or decreases rank
-            for (auto& e : edges) {
-                if (e.GetChain() == chain) {
-                    auto rank = e.GetRank();
-                    if (rank == 0) {
-                        min = 0;
-                    }
-                    else {
-                        max = rank;
-                    }
-                }
-            }
-            
-            for (auto& se : sEdges) {
-                if (se.GetChain() == chain) {
-                    auto rank = se.GetRank();
-                    if (rank == 0)
-                        min = 0;
-                    else
-                        max = rank;
-                }
-            }
-            
-        };
-
-        // Iterate through chains to find longest template
-        int longest = 0;
-        for (auto& i : c) {
-            int minRank = std::numeric_limits<int>::max();
-            int maxRank = -1;
-            getRank(minRank, maxRank, &i, t, e, se);
-            auto rankDif = maxRank - minRank;
-            longest = (rankDif > longest) ? rankDif : longest;
-        }
-        return longest;
-    };
-
-    auto longTemplateRed = longestTemplateLength(redChains, redTemplates, redEdges, rsEdges);
-    auto longTemplateBlue = longestTemplateLength(blueChains, blueTemplates, blueEdges, bsEdges);
-
-    // Appply lengths to scores
-    if (longRed == size - 1) { // Red Wins
-        heuristicScore = MAX_SCORE + remainingMoves.size();
-        fullyTraversed = true;
-    } else if (longBlue == size - 1) { // Blue Wins
-        heuristicScore = -(MAX_SCORE + remainingMoves.size());
-        fullyTraversed = true;
-    } else { // Neither player has won
-        heuristicScore += weights->ChainLengthFactor[longRed];
-        heuristicScore += weights->TemplateLengthFactor[longTemplateRed];
-        heuristicScore -= weights->ChainLengthFactor[longBlue];
-        heuristicScore -= weights->TemplateLengthFactor[longTemplateBlue];
-    }
-
-    // Add bias to prevent score oscillation
-    if (!isRed) {
-        heuristicScore -= weights->TempoBias;
-    }
-
-    // Set Scores from Heuristic Score
-
-    score = heuristicScore;
+    heuristicScore = HBTMethods::GetScore(longRed, longBlue, longTemplateRed, longTemplateBlue, centerScore, mv, size, base.isRed, redTiles, blueTiles, weights);
     searchScoreBlue = heuristicScore;
     searchScoreRed = heuristicScore;
+    score = heuristicScore;
 
     if (std::isnan(score) || std::abs(score) > 2 * MAX_SCORE) { // Should not occur
         score = score + 1;
     }
 
-    // Delete any broken templates/edges
-    otherTemplateList->erase(std::remove_if(otherTemplateList->begin(), otherTemplateList->end(), [](const Template& t) {
-        return t.IsBroken();
-        }), otherTemplateList->end());
-
-    sOthEdgeList->erase(std::remove_if(sOthEdgeList->begin(), sOthEdgeList->end(), [](const SpecialEdge& se) {
-        return se.IsBroken();
-        }), sOthEdgeList->end());
-
-    otherEdgeList->erase(std::remove_if(otherEdgeList->begin(), otherEdgeList->end(), [this](const Edge& e) {
-        return !e.IsStillEdge(helper);
-        }), otherEdgeList->end());
+    HBTMethods::ApplyMoveToOpponentStructures(mv, *otherChainList, *otherTemplateList, *sOthEdgeList);
+    HBTMethods::RemoveBrokenTemplates(*otherTemplateList, *otherEdgeList, *sOthEdgeList, helper);
 }
 
 std::unique_ptr<HexBoardTree> HexBoardTree::CreateTree(short numTiles, HexWeights* w, HexBoardHelper* h, std::vector<HexMove> moveList)
@@ -655,4 +334,45 @@ long HexBoardTree::GetBoardsEvaulated() const
     for (auto& i : children)
         count += i->GetBoardsEvaulated();
     return count + 1;
+}
+
+void HexBoardTree::CopyPreviousState(const HexBoardTree& base, short mv)
+{
+    children.reserve(base.remainingMoves.size());
+    remainingMoves = base.remainingMoves;
+    remainingMoves.erase(std::find(remainingMoves.begin(), remainingMoves.end(), mv)); // No error check, it will exist
+
+    isRed = !base.isRed;
+    weights = base.weights;
+    this->move = mv;
+    boardTiles = base.boardTiles;
+    size = base.size;
+    helper = base.helper;
+
+    // BitArrays
+    placedTiles = BitArray(&base.placedTiles);
+    placedTiles.SetBit(move);
+    redTiles = BitArray(&base.redTiles);
+    blueTiles = BitArray(&base.blueTiles);
+
+    // Copy chains, reserve space for new chain
+    redChains = base.redChains;
+    redChains.reserve(redChains.size() + 1);
+    blueChains = base.blueChains;
+    blueChains.reserve(blueChains.size() + 1);
+    redTemplates = base.redTemplates;
+    redTemplates.reserve(redTemplates.size() + 1);
+    blueTemplates = base.blueTemplates;
+    blueTemplates.reserve(blueTemplates.size() + 1);
+    redEdges = base.redEdges;
+    redEdges.reserve(redEdges.size() + 1);
+    blueEdges = base.blueEdges;
+    blueEdges.reserve(blueEdges.size() + 1);
+    rsEdges = base.rsEdges;
+    rsEdges.reserve(rsEdges.size() + 1);
+    bsEdges = base.bsEdges;
+    bsEdges.reserve(bsEdges.size() + 1);
+
+    redPoison = Poison(base.redPoison);
+    bluePoison = Poison(base.bluePoison);
 }

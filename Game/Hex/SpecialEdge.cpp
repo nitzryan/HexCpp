@@ -1,11 +1,12 @@
 #include "SpecialEdge.h"
+#include <algorithm>
 
-SpecialEdge::SpecialEdge(Chain* c, short edgeRank, BitArray edgeTiles)
+SpecialEdge::SpecialEdge(const Chain* c, short move, short edgeRank, const HexBoardHelper* helper, const BitArray* notOpposingTiles)
 {
 	chain = c;
 	rank = edgeRank;
-	edgeTemplate = edgeTiles;
-	broken = false;
+	numTiles = helper->GetNumberOfTiles();
+	templates = helper->GetSpecialEdges(move, c->IsRed(), notOpposingTiles);
 }
 
 short SpecialEdge::GetRank() const
@@ -13,12 +14,12 @@ short SpecialEdge::GetRank() const
 	return rank;
 }
 
-Chain* SpecialEdge::GetChain() const
+const Chain* SpecialEdge::GetChain() const
 {
 	return chain;
 }
 
-void SpecialEdge::RemapAddresses(const Chain* old, Chain* current)
+void SpecialEdge::RemapAddresses(const Chain* old, const Chain* current)
 {
 	if (chain == old) {
 		chain = current;
@@ -27,18 +28,21 @@ void SpecialEdge::RemapAddresses(const Chain* old, Chain* current)
 
 void SpecialEdge::OpponentMoveMade(short tile)
 {
-	if (edgeTemplate.BitIsSet(tile)) {
-		broken = true;
-	}
+	auto end = (std::remove_if(templates.begin(), templates.end(), [tile](const BitArray& ba) { return ba.BitIsSet(tile); }));
+	templates.erase(end, templates.end());
 }
 
 bool SpecialEdge::IsBroken() const
 {
-	return broken;
+	return templates.empty();
 }
 
-bool SpecialEdge::ShouldBeEdge1(short tile, bool isRed, const BitArray* notEnemyTiles, BitArray& edgeTiles, const HexBoardHelper* helper)
+BitArray SpecialEdge::GetTiles() const
 {
-	return helper->IsEdge1(tile, isRed, notEnemyTiles, edgeTiles);
+	BitArray ba(numTiles);
+	for (auto& t : templates)
+		ba = BitArray::Or(&ba, &t);
+
+	return ba;
 }
 

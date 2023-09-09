@@ -6,16 +6,18 @@
 
 class SpecialEdge {
 public:
-	SpecialEdge(Chain* c, short edgeRank, BitArray edgeTiles);
+	SpecialEdge(const Chain* c, short move, short edgeRank, const HexBoardHelper* helper, const BitArray* notOpposingTiles);
 	short GetRank() const;
-	Chain* GetChain() const;
-	void RemapAddresses(const Chain* old, Chain* current);
+	const Chain* GetChain() const;
+	void RemapAddresses(const Chain* old, const Chain* current);
 	void OpponentMoveMade(short tile);
 	bool IsBroken() const;
-	static bool ShouldBeEdge1(short tile, bool isRed, const BitArray* notEnemyTiles, BitArray& edgeTiles, const HexBoardHelper* helper);
+	BitArray GetTiles() const;
+	size_t numTemplates() { return templates.size(); }
 private:
-	bool broken;
 	short rank;
-	Chain* chain;
-	BitArray edgeTemplate;
+	short numTiles;
+	const Chain* chain;
+
+	std::vector<BitArray> templates;
 };

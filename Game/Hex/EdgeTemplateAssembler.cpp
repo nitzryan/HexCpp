@@ -46,7 +46,7 @@ std::map<Key1, BitArray> EdgeTemplateAssembler::CreateTemplateOneTile(short size
 	}
 
 	// Blue left templates
-	for (short row = maxRow + minCol; row < size - maxRow - maxCol; row++) {
+	for (short row = -maxRow - minCol; row < size - maxRow - maxCol; row++) {
 		std::vector<short> tls;
 		Key1 key;
 		key.red = false;
@@ -61,7 +61,7 @@ std::map<Key1, BitArray> EdgeTemplateAssembler::CreateTemplateOneTile(short size
 
 	// Blue right templates
 	short s = size * size - 1;
-	for (short row = maxRow + minCol; row < size - maxRow - maxCol; row++) {
+	for (short row = -maxRow - minCol; row < size - maxRow - maxCol; row++) {
 		std::vector<short> tls;
 		Key1 key;
 		key.red = false;

@@ -8,7 +8,7 @@
 class Chain
 {
 public:
-    Chain(short tile, short size, bool isRed, BitArray* placedTiles);
+    Chain(short tile, short size, bool isRed, const BitArray* placedTiles);
     bool ShouldMerge(const Chain& other) const;
     void MergeWith(Chain* other);
     void OpponentTilePlaced(short move);

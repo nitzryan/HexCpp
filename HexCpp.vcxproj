@@ -229,6 +229,7 @@
     <ClCompile Include="Database\sqlite3.c" />
     <ClCompile Include="Game\Hex\Edge.cpp" />
     <ClCompile Include="Game\Hex\EdgeTemplateAssembler.cpp" />
+    <ClCompile Include="Game\Hex\HBTMethods.cpp" />
     <ClCompile Include="Game\Hex\HexBoardHelper.cpp" />
     <ClCompile Include="Game\Hex\Poison.cpp" />
     <ClCompile Include="Game\Hex\SpecialEdge.cpp" />
@@ -277,6 +278,7 @@
     <ClInclude Include="Game\Hex\Chain.h" />
     <ClInclude Include="Game\Hex\Edge.h" />
     <ClInclude Include="Game\Hex\EdgeTemplateAssembler.h" />
+    <ClInclude Include="Game\Hex\HBTMethods.h" />
     <ClInclude Include="Game\Hex\HexAI.h" />
     <ClInclude Include="Game\Hex\HexBoard.h" />
     <ClInclude Include="Game\Hex\HexBoardHelper.h" />

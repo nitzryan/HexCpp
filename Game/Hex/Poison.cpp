@@ -36,51 +36,76 @@ void Poison::PlaceTile(short tile, short size, bool isRed)
 {
 	short row = tile / size;
 	short col = tile % size;
+
 	if (isRed) {
-		if (col != 0)
+		if (!maxPoison.BitIsSet(tile))
 		{
-			PlaceMaxRed(tile - 1, size);
-			if (row != (size - 1))
-				PlaceMaxRed(tile + size - 1, size);
+			maxPoison.SetBit(tile);
+			if (col > 0)
+			{
+				PlaceMaxRed(tile - 1, size);
+				if (row < (size - 1))
+					PlaceMaxRed(tile + size - 1, size);
+			}
 		}
 
-		if (col != (size - 1))
+		if (!minPoison.BitIsSet(tile))
 		{
-			PlaceMinRed(tile + 1, size);
-			if (row != 0)
-				PlaceMinRed(tile - size + 1, size);
+			minPoison.SetBit(tile);
+			if (col < (size - 1))
+			{
+				PlaceMinRed(tile + 1, size);
+				if (row > 0)
+					PlaceMinRed(tile - size + 1, size);
+			}
 		}
 	}
 	else {
-		if (row != 0)
+		if (!maxPoison.BitIsSet(tile))
 		{
-			PlaceMaxBlue(tile - size, size);
-			if (col != (size - 1))
-				PlaceMaxBlue(tile - size + 1, size);
+			maxPoison.SetBit(tile);
+			if (row > 0)
+			{
+				PlaceMaxBlue(tile - size, size);
+				if (col < (size - 1))
+					PlaceMaxBlue(tile - size + 1, size);
+			}
 		}
 
-		if (row != (size - 1))
+		if (!minPoison.BitIsSet(tile))
 		{
-			PlaceMinBlue(tile + size, size);
-			if (col != 0)
-				PlaceMinBlue(tile + size - 1, size);
+			minPoison.SetBit(tile);
+			if (row < (size - 1))
+			{
+				PlaceMinBlue(tile + size, size);
+				if (col > 0)
+					PlaceMinBlue(tile + size - 1, size);
+			}
 		}
 	}
 }
 
+void Poison::PlaceTiles(const BitArray* tiles, short size, bool isRed)
+{
+	auto tileList = tiles->GetTiles();
+
+	for (auto& i : tileList)
+		PlaceTile(i, size, isRed);
+}
+
 void Poison::PlaceMaxRed(short tile, short size)
 {
+	if (maxPoison.BitIsSet(tile))
+		return;
+
 	if (maxAdj.BitIsSet(tile))
 	{
-		if (maxPoison.BitIsSet(tile))
-			return;
-
 		maxPoison.SetBit(tile);
 		short row = tile / size;
 		short col = tile % size;
-		if (col != 0) {
+		if (col > 0 && col < (size - 1)) {
 			PlaceMaxRed(tile - 1, size);
-			if (row != (size - 1))
+			if (row < (size - 1))
 				PlaceMaxRed(tile + size - 1, size);
 		}
 	}
@@ -91,14 +116,17 @@ void Poison::PlaceMaxRed(short tile, short size)
 
 void Poison::PlaceMinRed(short tile, short size)
 {
+	if (minPoison.BitIsSet(tile))
+		return;
+
 	if (minAdj.BitIsSet(tile))
 	{
 		minPoison.SetBit(tile);
 		short row = tile / size;
 		short col = tile % size;
-		if (col != (size - 1)) {
+		if (col > 0 && col < (size - 1)) {
 			PlaceMinRed(tile + 1, size);
-			if (row != 0)
+			if (row > 0)
 				PlaceMinRed(tile - size + 1, size);
 		}
 	}
@@ -109,14 +137,17 @@ void Poison::PlaceMinRed(short tile, short size)
 
 void Poison::PlaceMaxBlue(short tile, short size)
 {
+	if (maxPoison.BitIsSet(tile))
+		return;
+
 	if (maxAdj.BitIsSet(tile))
 	{
 		maxPoison.SetBit(tile);
 		short row = tile / size;
 		short col = tile % size;
-		if (row != 0) {
+		if (row > 0 && row < (size - 1)) {
 			PlaceMaxBlue(tile - size, size);
-			if (col != (size - 1))
+			if (col < (size - 1))
 				PlaceMaxBlue(tile - size + 1, size);
 		}
 	}
@@ -127,14 +158,17 @@ void Poison::PlaceMaxBlue(short tile, short size)
 
 void Poison::PlaceMinBlue(short tile, short size)
 {
+	if (minPoison.BitIsSet(tile))
+		return;
+
 	if (minAdj.BitIsSet(tile))
 	{
 		minPoison.SetBit(tile);
 		short row = tile / size;
 		short col = tile % size;
-		if (row != (size - 1)) {
+		if (row > 0 && row < (size - 1)) {
 			PlaceMinBlue(tile + size, size);
-			if (col != 0)
+			if (col > 0)
 				PlaceMinBlue(tile + size - 1, size);
 		}
 	}

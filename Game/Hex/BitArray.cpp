@@ -129,3 +129,15 @@ bool BitArray::BitIsSet(short bit) const
 {
     return bits[bit/32] & (1 << (bit % 32));
 }
+
+std::vector<short> BitArray::GetTiles() const
+{
+    std::vector<short> ts;
+
+    for (short i = 0; i < bits.size(); i++)
+        for (char j = 0; j < 32; j++)
+            if (BitIsSet(i * 32 + j))
+                ts.push_back(i * 32 + j);
+
+    return ts;
+}

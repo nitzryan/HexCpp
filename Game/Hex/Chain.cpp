@@ -1,6 +1,6 @@
 #include "Chain.h"
 
-Chain::Chain(short tile, short size, bool isRed, BitArray* placedTiles)
+Chain::Chain(short tile, short size, bool isRed, const BitArray* placedTiles)
 {
     this->isRed = isRed;
     short size2 = size * size;
@@ -90,9 +90,9 @@ char Chain::GetChainLength() const
 void Chain::ApplyPoison(BitArray maxPoison, BitArray minPoison, const HexBoardHelper* helper)
 {
     auto tmp = BitArray::Not(&maxPoison);
-    maxRankedTiles = BitArray::And(&maxRankedTiles, &tmp);
+    auto max = BitArray::And(&maxRankedTiles, &tmp);
     tmp = BitArray::Not(&minPoison);
-    minRankedTiles = BitArray::And(&minRankedTiles, &tmp);
+    auto min = BitArray::And(&minRankedTiles, &tmp);
 
-    helper->CalculateRank(maxRankedTiles, minRankedTiles, minRank, maxRank, isRed);
+    helper->CalculateRank(max, min, minRank, maxRank, isRed);
 }

@@ -13,6 +13,7 @@ public:
 	const BitArray* GetMaxAdj() const { return &maxAdj; }
 	const BitArray* GetMinAdj() const { return &minAdj; }
 	void PlaceTile(short tile, short size, bool isRed);
+	void PlaceTiles(const BitArray* tiles, short size, bool isRed);
 private:
 	BitArray maxPoison, minPoison, maxAdj, minAdj;
 	void PlaceMaxRed(short tile, short size);

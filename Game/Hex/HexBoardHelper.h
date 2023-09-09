@@ -22,14 +22,18 @@ public:
 	HexBoardHelper(short size);
 	const BitArray* GetRankBitArrayRed(short rank) const;
 	const BitArray* GetRankBitArrayBlue(short rank) const;
-	bool IsEdge1(short tile, bool isRed, const BitArray* notOpposingTiles, BitArray& templateTiles) const;
+	bool IsEdge1(short tile, bool isRed, const BitArray* opposingTiles) const;
+	std::vector<BitArray> GetSpecialEdges(short tile, bool isRed, const BitArray* opposingTiles) const;
 	void CalculateRank(const BitArray& maxTiles, const BitArray& minTiles, char& minRank, char& maxRank, bool isRed) const;
+	short GetMaxRank() const { return size - 1; }
+	short GetNumberOfTiles() const { return numTiles; }
 private:
 	std::vector<BitArray> redRankArray, blueRankArray;
 	std::map<Key1, std::vector<BitArray>> oneTileEdges;
 	static std::map<Key1, std::vector<BitArray>> InitializeMap(short size);
 
 	short size;
+	short numTiles;
 };
 
 #endif

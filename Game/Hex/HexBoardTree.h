@@ -99,8 +99,10 @@ private:
     std::vector<SpecialEdge> rsEdges, bsEdges;
     const HexBoardHelper* helper;
 
-    BitArray placedTiles, redAdjacencies, blueAdjacencies, redTiles, blueTiles;
+    BitArray placedTiles, redTiles, blueTiles;
     Poison redPoison, bluePoison;
+
+    void CopyPreviousState(const HexBoardTree& base, short mv);
 };
 
 #endif // HEXBOARDTREE_H

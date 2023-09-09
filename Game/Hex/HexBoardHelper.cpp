@@ -1,9 +1,10 @@
 #include "HexBoardHelper.h"
-#include <array>
+#include <algorithm>
 #include "EdgeTemplateAssembler.h"
 
 HexBoardHelper::HexBoardHelper(short s) {
 	size = s;
+	numTiles = size * size;
 	redRankArray.reserve(size);
 	blueRankArray.reserve(size);
 
@@ -37,7 +38,7 @@ const BitArray* HexBoardHelper::GetRankBitArrayBlue(short rank) const {
 	return &blueRankArray.at(rank);
 }
 
-bool HexBoardHelper::IsEdge1(short tile, bool isRed, const BitArray* notOpposingTiles, BitArray& templateTiles) const
+bool HexBoardHelper::IsEdge1(short tile, bool isRed, const BitArray* opposingTiles) const
 {
 	Key1 key;
 	key.tile = tile;
@@ -47,19 +48,36 @@ bool HexBoardHelper::IsEdge1(short tile, bool isRed, const BitArray* notOpposing
 	if (it == oneTileEdges.end())
 		return false;
 
-	// Potential edge was found
-	std::vector<BitArray> templateVector = it->second;
-	for (auto& v : templateVector) {
-		auto notArray = BitArray::Not(notOpposingTiles);
-		auto tmp = BitArray::And(&notArray, &v);
-		if (BitArray::Equal(&tmp, &v))
-		{
-			templateTiles = v;
-			return true;
-		}
-	}
+	std::vector<BitArray> a = it->second; 
+	auto end = (std::remove_if(a.begin(), a.end(), [opposingTiles](const BitArray& ba) {
+		auto tmp = BitArray::And(opposingTiles, &ba);
+		return tmp.AtLeaseOneBit();
+		}));
 
-	return false;
+	a.erase(end, a.end());
+	return !a.empty();
+}
+
+std::vector<BitArray> HexBoardHelper::GetSpecialEdges(short tile, bool isRed, const BitArray* opposingTiles) const
+{
+	Key1 key;
+	key.tile = tile;
+	key.red = isRed;
+
+	auto it = oneTileEdges.find(key);
+	if (it == oneTileEdges.end())
+		return std::vector<BitArray>();
+
+	// Potential edge was found
+
+	std::vector<BitArray> a = it->second;
+	auto end = (std::remove_if(a.begin(), a.end(), [opposingTiles](const BitArray& ba) {
+		auto tmp = BitArray::And(opposingTiles, &ba);
+		return tmp.AtLeaseOneBit();
+		}));
+
+	a.erase(end, a.end());
+	return a;
 }
 
 void HexBoardHelper::CalculateRank(const BitArray& maxTiles, const BitArray& minTiles, char& minRank, char& maxRank, bool isRed) const

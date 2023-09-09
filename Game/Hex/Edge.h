@@ -9,12 +9,13 @@ class Edge {
 public:
 	Edge(Chain* c, char edgeRank, bool red);
 	char GetRank() const;
-	Chain* GetChain() const;
+	const Chain* GetChain() const;
 	bool IsStillEdge(const HexBoardHelper* helper) const;
-	void RemapAddresses(const Chain* old, Chain* current);
-	static bool ShouldBeEdge(Chain* chain, char rank, const HexBoardHelper* helper);
+	void RemapAddresses(const Chain* old, const Chain* current);
+	static bool ShouldBeEdge(const Chain* chain, char rank, const HexBoardHelper* helper);
+	const BitArray GetTiles(const HexBoardHelper* helper) const;
 private:
-	Chain* chain;
+	const Chain* chain;
 	char rank;
 	bool isRed;
 };
